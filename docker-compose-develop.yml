@@ -1,0 +1,20 @@
+develop:
+  extends:
+    file: base.yml
+    service: base
+  ports:
+    - "35736:35729"
+  container_name: gfw-story-api-develop
+  environment:
+    NODE_ENV: dev
+    API_GATEWAY_URI: http://192.168.99.100:8000/gateway/service
+    # SELF_REGISTRY: "true"
+  command: develop
+  links:
+    - mongo
+  volumes:
+    - ./app:/opt/gfw-story-api/app
+mongo:
+  extends:
+    file: base.yml
+    service: mongo

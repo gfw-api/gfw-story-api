@@ -1,0 +1,16 @@
+test:
+  extends:
+    file: base.yml
+    service: base
+  ports:
+    - "3100"
+  container_name: gfw-story-api-test
+  environment:
+    NODE_ENV: test
+  command: test
+  links:
+    - mongo
+mongo:
+  extends:
+    file: base.yml
+    service: mongo

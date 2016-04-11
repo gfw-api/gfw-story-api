@@ -1,0 +1,8 @@
+{
+    "logger": {
+        "name": "gfw-story-api-TEST",
+        "level": "debug",
+        "toFile": false,
+        "dirLogFile": null
+    }
+}

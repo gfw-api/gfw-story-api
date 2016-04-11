@@ -1,0 +1,12 @@
+{
+    "logger": {
+        "name": "gfw-story-api",
+        "level": "info",
+        "toFile": false,
+        "dirLogFile": null
+    },
+    "service": {
+        "uri": "http://gfw-story-api.herokuapp.com",
+        "port": null
+    }
+}

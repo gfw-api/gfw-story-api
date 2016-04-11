@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- 5.7.0
+sudo: required
+services:
+- docker
+script:
+- docker-compose -f docker-compose-test.yml build
+- docker-compose -f docker-compose-test.yml run test
+deploy:
+  provider: heroku
+  app: gfw-user-api-staging
+  api_key:
+    secure: k42q1cZvY/GMo9nU0qvcIgMD0GAlgcTV1bVpWUwwjBsJIdCQK0Eh2whReLZdFkmtWHuCVr4aB6aW8xZquFe4x/g1Il3E6DEkdmDDyuep+wojneeFXcHG4JdAIq8B9sSaTtfJ/fKi7HSFxPXpKi/QK7H08LGRteud5dxkcMnnBBrrMU5T74D54W+LJIPLoDHgUhDAwwOAT8sy/OqHmdIVVMSDPZnaVPBWA1mMX4DPom/r/iGMuiDCJY2VLcdxGg0nhbhiCnSk95xhbn/orvDM/7aS4vu6AQiLiTM1WoK3J00aMq78s4PaVNSR9v/tezh8Rgfsfb3K1SutQyhq2L0fnEl8EF8CpuoCmdOqigN1Cy93xQ8kEb4LcS96suLMOEc5NcGaipgt+tou4JMKSluMb7bBxqZOJeZXcH1eQOEBPqU87k8MNtE5dWejMaIyTSIy/83NdPDUfCjrc2V/Krg5Zb6NTUonmuOw1RuZqo1nkbYVuyAuG5XSJlb8IjGVPCjWD9P+ypf9rag3NToNE1Csfgy2vMi7w2CuAOJR9+o08Bc3kg0eZ72LhuvQzrgBTUVGflJWD1h8fqUXDmeve6e8fggg8SGs+S+b06I4ClRNC/TQd1V6ESDrSexCvhlkaDwVoWsYoUhyG+X5MhIRQecjT7zU1t8Y50DYIzZhFZoqZ/k=

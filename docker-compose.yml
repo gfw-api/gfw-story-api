@@ -1,0 +1,16 @@
+prod:
+  extends:
+    file: base.yml
+    service: base
+  container_name: gfw-story-api
+  environment:
+    NODE_ENV: prod
+  command: start
+  links:
+    - mongo
+  volumes:
+    - ./app:/opt/gfw-story-api/app
+mongo:
+  extends:
+    file: base.yml
+    service: mongo

@@ -9,7 +9,7 @@
         "uri": "http://gfw-story-api-staging.herokuapp.com",
         "port": null
     },
-    "cartoDB":{
+    "cartoDB": {
         "table": "stories_dev_copy"
-    },
+    }
 }

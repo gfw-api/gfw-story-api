@@ -36,6 +36,9 @@ docker-compose -f docker-compose-test.yml run test
 Is necessary define the next environment variables:
 * API_GATEWAY_URI => Url the register of the API Gateway. Remember: If the authentication is active in API Gateway, add the username and password in the url
 * NODE_ENV => Environment (prod, staging, dev)
+* CARTODB_APIKEY => API key to connect to CartoDB
+* CARTODB_USER => User to connect to CartoDB
+
 
 
 # Config

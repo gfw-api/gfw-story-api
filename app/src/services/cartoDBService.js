@@ -5,7 +5,7 @@ var CartoDB = require('cartodb');
 var Mustache = require('mustache');
 Mustache.escapeHtml = function (text) { return text; };
 
-const SELECT_SQL = 'SELECT st_asGeojson(the_geom) as geojson, * FROM {{{table}}}';
+const SELECT_SQL = 'SELECT st_asGeojson(the_geom) as geojson, * FROM {{{table}}} WHERE visible = True AND ORDER BY date ASC';
 const INSERT_SQL = 'INSERT INTO {{{table}}} (name, details, title, visible, location, email, date, user_id, media, the_geom, created_at, updated_at) VALUES ({{{name}}}, {{{details}}},{{{title}}}, {{{visible}}}, {{{location}}},{{{email}}}, {{{date}}}, {{{userId}}}, {{{media}}},st_setsrid(ST_GeomFromGeoJSON({{{theGeom}}}),4326), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)';
 
 var executeThunk = function(client, sql, params){

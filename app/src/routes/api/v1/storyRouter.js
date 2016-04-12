@@ -15,7 +15,7 @@ class StoryRouter {
     static * createStory() {
         logger.info('Creating story with body', this.request.body);
         try{
-            //esta el usuario logado
+            //if user is logged. this param is add by api-gateway
             if(this.request.body.loggedUser){
                 this.request.body.userId = this.request.body.loggedUser._id;
             }

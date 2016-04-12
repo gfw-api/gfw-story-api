@@ -64,7 +64,7 @@ class StoryRouter {
 
     static formatStories(stories){
         let newStories = [];
-        logger.debug('stories', stories);
+
         if(stories){
             for(let i = 0, length = stories.length; i < length; i++){
                 logger.debug('Format story');
@@ -78,9 +78,13 @@ class StoryRouter {
     static * getStories() {
         logger.info('Obtaining stories');
         let stories = yield cartoDBService.getStories();
-        stories = StoryRouter.formatStories(stories);
-        yield StoryRouter.cacheAllStories(stories);
-        this.body = StorySerializer.serialize(stories);
+        try{
+            stories = StoryRouter.formatStories(stories);
+            yield StoryRouter.cacheAllStories(stories);
+            this.body = StorySerializer.serialize(stories);
+        }catch(e){
+            logger.error(e);
+        }
     }
 
     static * getStoryById() {

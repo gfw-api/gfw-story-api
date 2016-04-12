@@ -16,7 +16,7 @@ produces:
 paths:
   /story/{id}:
     get:
-      description: Returns story based on a single ID, if the story not exist return 404
+      description: Returns story based on a single ID, if the story not exist or not visible return 404
       operationId: getStoryById
       produces:
         - application/vnd.api+json
@@ -79,8 +79,8 @@ paths:
             $ref: '#/definitions/Errors'
 
     get:
-      summary: Obtain all stories
-      description: Obtain all stories
+      summary: Obtain all stories (only visibles)
+      description: Obtain all stories (only visibles)
       produces:
         - application/vnd.api+json
       tags:

@@ -58,6 +58,9 @@ class StoryRouter {
             let geo = JSON.parse(story.geojson);
             newStory.lat = geo.coordinates[1];
             newStory.lng = geo.coordinates[0];
+        } else {
+            logger.warn('Not contain geojson. Id: ', story.cartodb_id );
+
         }
         return newStory;
     }
@@ -67,11 +70,9 @@ class StoryRouter {
 
         if(stories){
             for(let i = 0, length = stories.length; i < length; i++){
-                logger.debug('Format story');
                 newStories.push(StoryRouter.formatStory(stories[i]));
             }
         }
-        logger.debug('new stories ', newStories);
         return newStories;
     }
 

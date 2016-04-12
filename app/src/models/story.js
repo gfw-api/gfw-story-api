@@ -5,10 +5,10 @@ var Schema = mongoose.Schema;
 var Story = new Schema({
     id: {type: Number},
     details: {type: String, trim: true},
-    title: {type: String, required: true, trim: true},
+    title: {type: String, trim: true}, //required: true
     visible: {type: Boolean},
     location: {type: String, trim: true},
-    email:{type: String, required: true, trim: true},
+    email:{type: String, trim: true}, //required: true,
     name: {type: String, trim: true},
     createdAt: {type: Date, expires: '24h'},
     updatedAt: {type: Date},

@@ -55,49 +55,32 @@ Example:
     "id": "#(service.id)",
     "name": "#(service.name)",
     "urls": [{
-        "url": "/user",
+        "url": "/story",
         "method": "POST",
         "endpoints": [{
             "method": "POST",
             "baseUrl": "#(service.uri)",
-            "path": "/api/v1/user"
+            "path": "/api/v1/story",
+            "data": ["loggedUser"]
         }]
     }, {
-        "url": "/user/createOrGet",
-        "method": "POST",
-        "endpoints": [{
-            "method": "POST",
-            "baseUrl": "#(service.uri)",
-            "path": "/api/v1/user/createOrGet"
-        }]
-    }, {
-        "url": "/user/:id",
+        "url": "/story/:id",
         "method": "GET",
-        "authenticated": true,
         "endpoints": [{
             "method": "GET",
             "baseUrl": "#(service.uri)",
-            "path": "/api/v1/user/:id"
+            "path": "/api/v1/story/:id"
         }]
     }, {
-        "url": "/user/:id",
-        "method": "DELETE",
-        "authenticated": true,
+        "url": "/user",
+        "method": "GET",
         "endpoints": [{
-            "method": "DELETE",
+            "method": "GET",
             "baseUrl": "#(service.uri)",
-            "path": "/api/v1/user/:id"
-        }]
-    }, {
-        "url": "/user/:id",
-        "method": "PATCH",
-        "authenticated": true,
-        "endpoints": [{
-            "method": "PATCH",
-            "baseUrl": "#(service.uri)",
-            "path": "/api/v1/user/:id"
+            "path": "/api/v1/story"
         }]
     }]
 }
+
 
 ```

@@ -19,7 +19,7 @@
             "path": "/api/v1/story/:id"
         }]
     }, {
-        "url": "/user",
+        "url": "/story",
         "method": "GET",
         "endpoints": [{
             "method": "GET",

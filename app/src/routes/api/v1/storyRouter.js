@@ -27,7 +27,6 @@ class StoryRouter {
     }
 
     static * cacheAllStories(stories){
-        logger.debug(stories);
         logger.debug('Removing cache');
         yield Story.remove({});
         logger.debug('Populating cache');

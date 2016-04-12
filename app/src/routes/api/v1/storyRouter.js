@@ -95,14 +95,19 @@ class StoryRouter {
         }
         logger.debug('Not find in cache. Obtaining of cartodb');
         story = yield cartoDBService.getStoryById(this.params.id);
-        this.body = StorySerializer.serialize(StoryRouter.formatStory(story));
+        if(story){
+            story = StoryRouter.formatStory(story);
+            yield new Story(story).save();
+            this.body = StorySerializer.serialize(story);
+        }
+        this.throw(404, 'Story not found');
     }
 
 
 }
 
 router.get('/', StoryRouter.getStories);
-router.get('/:id', StoryValidator.getBydId, StoryRouter.getStoryById);
+router.get('/:id', StoryValidator.getStoryById, StoryRouter.getStoryById);
 router.post('/',  StoryRouter.createStory);
 
 module.exports = router;

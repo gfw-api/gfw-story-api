@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
-  title: GFW User API
-  description: Global Forest Watch - User API
+  title: GFW Story API
+  description: Global Forest Watch - Story API
   version: "1.0.0"
 host: example.vizzuality.com
 
@@ -14,27 +14,27 @@ produces:
   - application/vnd.api+json
 
 paths:
-  /user/{id}:
+  /story/{id}:
     get:
-      description: Returns user based on a single ID, if the user not exist return 404
-      operationId: getUserById
+      description: Returns story based on a single ID, if the story not exist return 404
+      operationId: getStoryById
       produces:
         - application/vnd.api+json
       tags:
-        - User
+        - Story
       parameters:
         - name: id
           in: path
-          description: ID of user to fetch
+          description: ID of story to fetch
           required: true
           type: string
       responses:
         200:
-          description: User obtained
+          description: Story obtained
           schema:
-            $ref: '#/definitions/UserAPI'
+            $ref: '#/definitions/StoryAPI'
         404:
-          description: User not found
+          description: Story not found
           schema:
             $ref: '#/definitions/Errors'
         500:
@@ -45,95 +45,28 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Errors'
-    delete:
-      description: Delete user based on a single ID, if the user not exist return 404
-      operationId: deleteUserById
-      produces:
-        - application/vnd.api+json
-      tags:
-        - User
-      parameters:
-        - name: id
-          in: path
-          description: ID of user to delete
-          required: true
-          type: string
-      responses:
-        200:
-          description: User deleted
-          schema:
-            $ref: '#/definitions/UserAPI'
-        404:
-          description: User not found
-          schema:
-            $ref: '#/definitions/Errors'
-        500:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-        default:
-          description: unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-    put:
-      description: Update user based on a single ID, if the user not exist return 404
-      operationId: updateUser
-      produces:
-        - application/vnd.api+json
-      tags:
-        - User
-      parameters:
-        - name: id
-          in: path
-          description: ID of user to update
-          required: true
-          type: string
-        - name: user
-          in: body
-          description: User to save
-          required: true
-          schema:
-            $ref: '#/definitions/UserCreate'
-      responses:
-        200:
-          description: User updated
-          schema:
-            $ref: '#/definitions/UserAPI'
-        404:
-          description: User not found
-          schema:
-            $ref: '#/definitions/Errors'
-        500:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-        default:
-          description: unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-  /user:
+
+  /story:
     post:
-      summary: Create user. If user exist, return 400
-      description: Create user
+      summary: Create story. If user is logged, save the id user in the story
+      description: Create story. If user is logged, save the id user in the story
       produces:
         - application/vnd.api+json
       tags:
-        - User
-      operationId: createUser
+        - Story
+      operationId: createStory
       parameters:
-        - name: user
+        - name: story
           in: body
-          description: User to save
+          description: Story to save
           required: true
           schema:
-            $ref: '#/definitions/UserCreate'
+            $ref: '#/definitions/StoryCreate'
       responses:
-        200:
-          description: The user created
-          schema:
-            $ref: '#/definitions/UserAPI'
+        204:
+          description: Story created correctly
         400:
-          description: Validate error or duplicated user
+          description: Validate error
           schema:
             $ref: '#/definitions/Errors'
         500:
@@ -144,52 +77,20 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Errors'
+
     get:
-      description: Returns all users
-      operationId: getUsers
+      summary: Obtain all stories
+      description: Obtain all stories
       produces:
         - application/vnd.api+json
       tags:
-        - User
+        - Story
+      operationId: getStories
       responses:
         200:
-          description: Users obtained
+          description: The all stories
           schema:
-            $ref: '#/definitions/UserAPI'
-        404:
-          description: User not found
-          schema:
-            $ref: '#/definitions/Errors'
-        500:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-        default:
-          description: unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-            
-  /user/createOrGet:
-    post:
-      summary: Create user if not exist, if exist return the user
-      description: Create user if not exist, if exist return the user
-      produces:
-        - application/vnd.api+json
-      tags:
-        - User
-      operationId: createOrGetUser
-      parameters:
-        - name: user
-          in: body
-          description: User to save
-          required: true
-          schema:
-            $ref: '#/definitions/UserCreate'
-      responses:
-        200:
-          description: The user created
-          schema:
-            $ref: '#/definitions/UserAPI'
+            $ref: '#/definitions/StoryAPI'
         400:
           description: Validate error
           schema:
@@ -254,15 +155,130 @@ definitions:
         description: A meta object containing non-standard meta-information about the error.
 
 
-  UserAPI:
+  StoryAPI:
     type: object
     properties:
       data:
         type: array
         items:
-          $ref: '#/definitions/User'
+          $ref: '#/definitions/Story'
 
-  User:
+  Story:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Resource type
+      id:
+        type: string
+        description: Resource id
+      attributes:
+        properties:
+          schema:
+            $ref: '#/definitions/StoryData'
+  StoryData:
+    type: object
+    properties:
+      name:
+        type: string
+      title:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      visible:
+        type: boolean
+      details:
+        type: string
+      date:
+        type: string
+      email:
+        type: string
+      location:
+        type: string
+      userId:
+        type: string
+      lat:
+        type: number
+        format: float
+      lng:
+        type: number
+        format: float
+      media:
+        type: array
+        items:
+          properties:
+            url:
+              type: string
+            embedUrl:
+              type: string
+            previewUrl:
+              type: string
+            mimeType:
+              type: string
+            order:
+              type: number
+              format: integer
+  StoryCreate:
+    type: object
+    properties:
+      loggedUser:
+        type: object
+        description: Attribute seted by api-gateway when the user is logged
+        properties:
+          schema:
+            $ref: '#/definitions/LoggedUser'
+      name:
+        type: string
+      title:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      visible:
+        type: boolean
+      details:
+        type: string
+      date:
+        type: string
+      email:
+        type: string
+      location:
+        type: string
+      lat:
+        type: number
+        format: float
+      lng:
+        type: number
+        format: float
+      media:
+        type: array
+        items:
+          properties:
+            url:
+              type: string
+            embedUrl:
+              type: string
+            previewUrl:
+              type: string
+            mimeType:
+              type: string
+            order:
+              type: number
+              format: integer
+      geojson:
+        type: object
+        properties:
+          type:
+            type: string
+          coordinates:
+            type: array
+            items:
+              type: number
+              format: float
+  LoggedUser:
     type: object
     properties:
       type:
@@ -302,9 +318,3 @@ definitions:
         type: string
       howDoYouUse:
         type: string
-        
-  UserCreate:
-    allOf:
-      - $ref: '#/definitions/UserData'
-    type: object
-      

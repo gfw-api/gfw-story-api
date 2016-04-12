@@ -20,7 +20,7 @@ class StoryValidator {
 
     }
 
-    static * getBydId(next){
+    static * getStoryById(next){
         logger.debug('Validate get story by id');
         this.checkParams('id').notEmpty();
         if(this.errors) {

@@ -5,9 +5,9 @@ var ErrorSerializer = require('serializers/errorSerializer');
 class StoryValidator {
 
     static * create(next) {
-        logger.debug('Validate register user');
+        logger.debug('Validate register story');
         this.checkBody('title').notEmpty();
-        this.checkBody('location').notEmpty();
+        this.checkBody('the_geom').notEmpty();
         this.checkBody('email').notEmpty();
 
         if(this.errors) {
@@ -21,7 +21,7 @@ class StoryValidator {
     }
 
     static * getBydId(next){
-        logger.debug('Validate get user by id');
+        logger.debug('Validate get story by id');
         this.checkParams('id').notEmpty();
         if(this.errors) {
             logger.debug('errors ', this.errors);

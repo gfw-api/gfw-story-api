@@ -3,18 +3,20 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Story = new Schema({
-    'cartodb_id': {type: Number, required: true},
+    id: {type: Number},
     details: {type: String, trim: true},
     title: {type: String, required: true, trim: true},
-    token: {type: String, trim: true},
     visible: {type: Boolean},
-    location: {type: String, required: true, trim: true},
+    location: {type: String, trim: true},
     email:{type: String, required: true, trim: true},
     name: {type: String, trim: true},
-    'created_at': {type: Date, expires: '24h'},
-    'updated_at': {type: Date},
+    createdAt: {type: Date, expires: '24h'},
+    updatedAt: {type: Date},
     date: {type: Date},
-    media: {type: String, trim: true},
+    media: Schema.Types.Mixed,
+    lat: {type: Number, required: true},
+    lng: {type: Number, required: true},
+    userId: {type: String, trim: true}
 });
 
 module.exports = mongoose.model('Story', Story);

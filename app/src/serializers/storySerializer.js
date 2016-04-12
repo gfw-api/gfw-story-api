@@ -2,19 +2,22 @@
 
 var logger = require('logger');
 var JSONAPISerializer = require('jsonapi-serializer').Serializer;
-var userSerializer = new JSONAPISerializer('user', {
-    attributes: ['fullName', 'provider', 'providerId', 'email', 'createdAt', 'sector', 'primaryResponsibilities', 'country', 'state', 'city', 'howDoYouUse'],
+var storySerializer = new JSONAPISerializer('story', {
+    attributes: ['name', 'title', 'createdAt', 'updatedAt', 'visible', 'details', 'date', 'email', 'location', 'userId', 'media', 'lat', 'lng'],
     typeForAttribute: function (attribute, record) {
         return attribute;
     },
-    keyForAttribute: 'camelCase' 
+    media:{
+        attributes: ['url', 'embed_url', 'preview_url', 'mime_type', 'order']
+    },
+    keyForAttribute: 'camelCase'
 });
 
-class UserSerializer {
+class StorySerializer {
 
   static serialize(data) {
-    return userSerializer.serialize(data);
+    return storySerializer.serialize(data);
   }
 }
 
-module.exports = UserSerializer;
+module.exports = StorySerializer;

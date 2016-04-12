@@ -8,6 +8,8 @@ develop:
   environment:
     NODE_ENV: dev
     API_GATEWAY_URI: http://192.168.99.100:8000/gateway/service
+    CARTODB_APIKEY: <apikey>
+    CARTODB_USER: <cartoUser>
     # SELF_REGISTRY: "true"
   command: develop
   links:

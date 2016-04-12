@@ -16,8 +16,9 @@
     },
     "cartoDB":{
         "apiKey": null,
-        "user": null
-    }
+        "user": null,
+        "table": "test_story"
+    },
     "mongodb":{
         "database": "gfw_story_db",
         "host": "192.168.99.100",

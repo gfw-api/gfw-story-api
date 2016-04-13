@@ -5,7 +5,7 @@ var CartoDB = require('cartodb');
 var Mustache = require('mustache');
 Mustache.escapeHtml = function (text) { return text; };
 
-const SELECT_SQL = 'SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id FROM {{{table}}} WHERE visible = True {{#id}} AND cartodb_id = {{{id}}} {{/id}} ORDER BY date ASC';
+const SELECT_SQL = 'SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id FROM {{{table}}} {{#id}} WHERE cartodb_id = {{{id}}} {{/id}} ORDER BY date ASC';
 const INSERT_SQL = 'INSERT INTO {{{table}}} (name, details, title, visible, location, email, date, user_id, media, the_geom) VALUES ({{{name}}}, {{{details}}},{{{title}}}, {{{visible}}}, {{{location}}},{{{email}}}, {{{date}}}, {{{userId}}}, {{{media}}},st_setsrid(ST_GeomFromGeoJSON({{{theGeom}}}),4326))' +
     ' RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id';
 

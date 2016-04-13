@@ -44,23 +44,17 @@ class StoryRouter {
             title: story.title,
             createdAt: story.created,
             updatedAt: story.updated,
-            id: story.cartodb_id,
+            id: story.id,
             visible: story.visible,
             details: story.details,
             date: story.date,
             email: story.email,
             location: story.location,
             userId: story.user_id,
-            media: JSON.parse(story.media)
+            media: JSON.parse(story.media),
+            lat: story.lat,
+            lng: story.lng
         };
-        if(story.geojson){
-            let geo = JSON.parse(story.geojson);
-            newStory.lat = geo.coordinates[1];
-            newStory.lng = geo.coordinates[0];
-        } else {
-            logger.warn('Not contain geojson. Id: ', story.cartodb_id );
-
-        }
         return newStory;
     }
 

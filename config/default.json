@@ -17,7 +17,7 @@
     "cartoDB":{
         "apiKey": null,
         "user": null,
-        "table": "test_story"
+        "table": "gfw_stories_staging"
     },
     "mongodb":{
         "database": "gfw_story_db",

@@ -19,8 +19,12 @@ class StoryRouter {
             if(this.request.body.loggedUser){
                 this.request.body.userId = this.request.body.loggedUser.data.id;
             }
-            yield cartoDBService.createStory(this.request.body);
-            this.response.status = 204;
+            let story = yield cartoDBService.createStory(this.request.body);
+            logger.debug('Saving new story in cache');
+            let storyFormat = StoryRouter.formatStory(story);
+            yield new Story(storyFormat).save();
+            this.body = StorySerializer.serialize(storyFormat);
+
         }catch(err){
             logger.error(err);
         }
@@ -42,8 +46,8 @@ class StoryRouter {
         let newStory = {
             name: story.name,
             title: story.title,
-            createdAt: story.created,
-            updatedAt: story.updated,
+            createdAt: story.created_at,
+            updatedAt: story.updated_at,
             id: story.id,
             visible: story.visible,
             details: story.details,

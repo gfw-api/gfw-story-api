@@ -63,8 +63,10 @@ paths:
           schema:
             $ref: '#/definitions/StoryCreate'
       responses:
-        204:
+        200:
           description: Story created correctly
+          schema:
+            $ref: '#/definitions/StoryAPI'
         400:
           description: Validate error
           schema:

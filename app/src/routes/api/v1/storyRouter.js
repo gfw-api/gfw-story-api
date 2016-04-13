@@ -17,7 +17,7 @@ class StoryRouter {
         try{
             //if user is logged. this param is add by api-gateway
             if(this.request.body.loggedUser){
-                this.request.body.userId = this.request.body.loggedUser._id;
+                this.request.body.userId = this.request.body.loggedUser.data.id;
             }
             yield cartoDBService.createStory(this.request.body);
             this.response.status = 204;

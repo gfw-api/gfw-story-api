@@ -8,7 +8,7 @@
     "service": {
         "id": "gfw-story-api_1.0.0",
         "name": "GFW Story API",
-        "uri": "http://192.168.99.100:3400",
+        "uri": "http://192.168.99.100:3500",
         "port": 3500
     },
     "apiGateway":{
@@ -17,7 +17,7 @@
     "cartoDB":{
         "apiKey": null,
         "user": null,
-        "table": "test_story"
+        "table": "gfw_stories_staging"
     },
     "mongodb":{
         "database": "gfw_story_db",

@@ -5,8 +5,9 @@ var CartoDB = require('cartodb');
 var Mustache = require('mustache');
 Mustache.escapeHtml = function (text) { return text; };
 
-const SELECT_SQL = 'SELECT st_asGeojson(the_geom) as geojson, * FROM {{{table}}}';
-const INSERT_SQL = 'INSERT INTO {{{table}}} (name, details, title, visible, location, email, date, user_id, media, the_geom, created_at, updated_at) VALUES ({{{name}}}, {{{details}}},{{{title}}}, {{{visible}}}, {{{location}}},{{{email}}}, {{{date}}}, {{{userId}}}, {{{media}}},st_setsrid(ST_GeomFromGeoJSON({{{theGeom}}}),4326), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)';
+const SELECT_SQL = 'SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id FROM {{{table}}} {{#id}} WHERE cartodb_id = {{{id}}} {{/id}} ORDER BY date ASC';
+const INSERT_SQL = 'INSERT INTO {{{table}}} (name, details, title, visible, location, email, date, user_id, media, the_geom) VALUES ({{{name}}}, {{{details}}},{{{title}}}, {{{visible}}}, {{{location}}},{{{email}}}, {{{date}}}, {{{userId}}}, {{{media}}},st_setsrid(ST_GeomFromGeoJSON({{{theGeom}}}),4326))' +
+    ' RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id';
 
 var executeThunk = function(client, sql, params){
     return function(callback){
@@ -41,14 +42,12 @@ class CartoDBService {
             userId: story.userId ? wrapQuotes(story.userId) : 'null',
             media: wrapQuotes(JSON.stringify(story.media)),
             theGeom: wrapQuotes(JSON.stringify(story.geojson)),
-            table: config.get('cartoDB.table'),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            table: config.get('cartoDB.table')
         };
 
-        var data = yield executeThunk(this.client, INSERT_SQL, params);
+        let data = yield executeThunk(this.client, INSERT_SQL, params);
 
-        return story;
+        return data.rows[0];
     }
 
     * getStories(){
@@ -57,7 +56,7 @@ class CartoDBService {
     }
 
     * getStoryById(id){
-        let data = yield executeThunk(this.client, SELECT_SQL + ' WHERE cartodb_id= {{{id}}}', {table: config.get('cartoDB.table'), id: id});
+        let data = yield executeThunk(this.client, SELECT_SQL, {table: config.get('cartoDB.table'), id: id});
         if(data && data.rows && data.rows.length === 1){
             data.rows[0].userId = data.rows[0].user_id;
             delete data.rows[0].user_id;

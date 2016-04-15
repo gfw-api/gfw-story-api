@@ -10,7 +10,7 @@ develop:
     API_GATEWAY_URI: http://192.168.99.100:8000/gateway/service
     CARTODB_APIKEY: <token>
     CARTODB_USER: <user>
-    # SELF_REGISTRY: "true"
+    SELF_REGISTRY: "on"
   command: develop
   links:
     - mongo

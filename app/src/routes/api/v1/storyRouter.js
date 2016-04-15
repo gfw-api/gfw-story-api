@@ -17,17 +17,20 @@ class StoryRouter {
         try{
             //if user is logged. this param is add by api-gateway
             if(this.request.body.loggedUser){
-                this.request.body.userId = this.request.body.loggedUser._id;
+                this.request.body.userId = this.request.body.loggedUser.data.id;
             }
-            yield cartoDBService.createStory(this.request.body);
-            this.response.status = 204;
+            let story = yield cartoDBService.createStory(this.request.body);
+            logger.debug('Saving new story in cache');
+            let storyFormat = StoryRouter.formatStory(story);
+            yield new Story(storyFormat).save();
+            this.body = StorySerializer.serialize(storyFormat);
+
         }catch(err){
             logger.error(err);
         }
     }
 
     static * cacheAllStories(stories){
-        logger.debug(stories);
         logger.debug('Removing cache');
         yield Story.remove({});
         logger.debug('Populating cache');
@@ -43,44 +46,43 @@ class StoryRouter {
         let newStory = {
             name: story.name,
             title: story.title,
-            createdAt: story.created,
-            updatedAt: story.updated,
-            id: story.cartodb_id,
+            createdAt: story.created_at,
+            updatedAt: story.updated_at,
+            id: story.id,
             visible: story.visible,
             details: story.details,
             date: story.date,
             email: story.email,
             location: story.location,
             userId: story.user_id,
-            media: JSON.parse(story.media)
+            media: JSON.parse(story.media),
+            lat: story.lat,
+            lng: story.lng
         };
-        if(story.geojson){
-            let geo = JSON.parse(story.geojson);
-            newStory.lat = geo.coordinates[1];
-            newStory.lng = geo.coordinates[0];
-        }
         return newStory;
     }
 
     static formatStories(stories){
         let newStories = [];
-        logger.debug('stories', stories);
+
         if(stories){
             for(let i = 0, length = stories.length; i < length; i++){
-                logger.debug('Format story');
                 newStories.push(StoryRouter.formatStory(stories[i]));
             }
         }
-        logger.debug('new stories ', newStories);
         return newStories;
     }
 
     static * getStories() {
         logger.info('Obtaining stories');
         let stories = yield cartoDBService.getStories();
-        stories = StoryRouter.formatStories(stories);
-        yield StoryRouter.cacheAllStories(stories);
-        this.body = StorySerializer.serialize(stories);
+        try{
+            stories = StoryRouter.formatStories(stories);
+            yield StoryRouter.cacheAllStories(stories);
+            this.body = StorySerializer.serialize(stories);
+        }catch(e){
+            logger.error(e);
+        }
     }
 
     static * getStoryById() {

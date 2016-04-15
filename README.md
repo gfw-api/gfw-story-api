@@ -4,11 +4,14 @@ Master: [![Build Status](https://travis-ci.org/gfw-api/gfw-story-api.svg?branch=
 
 This repository is the microservice that it implement the story funcionality and exposed the /story endpoint in the api-gateway
 
+[View the documentation for this
+API](http://gfw-api.github.io/swagger-ui/?url=https://raw.githubusercontent.com/gfw-api/gfw-story-api/master/app/microservice/swagger.yml#/Story)
+
 ## First time user
 Perform the following steps:
 * [Install docker](https://docs.docker.com/engine/installation/)
-* Clone this repository: ```git clone git@github.com:Vizzuality/gfw-ogr-api.git```
-* Enter in the directory (cd gfw-ogr-api)
+* Clone this repository: ```git clone git@github.com:Vizzuality/gfw-story-api.git```
+* Enter in the directory (cd gfw-story-api)
 * After, you open a terminal (if you have mac or windows, open a terminal with the 'Docker Quickstart Terminal') and execute the next command:
 
 ```bash

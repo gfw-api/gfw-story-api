@@ -58,7 +58,18 @@ var onDbReady = function(err) {
     var port = process.env.PORT || config.get('service.port');
 
     server.listen(port, function() {
-        require('registerService')();
+        var p = require('register-microservice-client')({
+            id: config.get('service.id'),
+            name: config.get('service.name'),
+            uri: config.get('service.uri'),
+            dirConfig: path.join(__dirname, '../microservice'),
+            dirPackage: path.join(__dirname, '../../'),
+            logger: logger
+        });
+        p.then(function() {}, function(err) {
+            logger.error(err);
+            process.exit(1);
+        });
     });
 
     logger.info('Server started in port:' + port);

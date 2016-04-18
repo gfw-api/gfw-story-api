@@ -32,7 +32,7 @@ class CartoDBService {
 
     * createStory(story){
         var params = {
-            name: story.name? wrapQuotes(story.name) : null,
+            name: wrapQuotes(story.name),
             details: story.details ? wrapQuotes(story.details) : null,
             title: wrapQuotes(story.title),
             visible: story.visible ? wrapQuotes(story.visible) : false,
@@ -58,8 +58,7 @@ class CartoDBService {
     * getStoryById(id){
         let data = yield executeThunk(this.client, SELECT_SQL, {table: config.get('cartoDB.table'), id: id});
         if(data && data.rows && data.rows.length === 1){
-            data.rows[0].userId = data.rows[0].user_id;
-            delete data.rows[0].user_id;
+
             return data.rows[0];
         }
         return null;

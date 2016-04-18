@@ -43,8 +43,10 @@
     "koa-validate": "0.2.11",
     "mongoose": "4.4.6",
     "mustache": "2.2.1",
-    "register-microservice-client": "git+https://github.com/Vizzuality/register-microservice-client.git#1.0.2"
+    "microservice-client": "git+https://github.com/Vizzuality/microservice-client.git#master",
+    "async-client": "git+https://github.com/Vizzuality/async-client-nodejs.git#1.0.0"  
   },
+
   "devDependencies": {
     "co-mocha": "1.1.2",
     "blanket": "1.2.2",

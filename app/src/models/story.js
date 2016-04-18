@@ -16,7 +16,8 @@ var Story = new Schema({
     media: Schema.Types.Mixed,
     lat: {type: Number, required: true},
     lng: {type: Number, required: true},
-    userId: {type: String, trim: true}
+    userId: {type: String, trim: true},
+    populatedUser: {type: Boolean, default: false}
 });
 
 module.exports = mongoose.model('Story', Story);

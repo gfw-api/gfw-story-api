@@ -43,8 +43,9 @@
     "koa-validate": "0.2.11",
     "mongoose": "4.4.6",
     "mustache": "2.2.1",
-    "microservice-client": "git+https://github.com/Vizzuality/microservice-client.git#master",
-    "async-client": "git+https://github.com/Vizzuality/async-client-nodejs.git#1.0.0"  
+    "microservice-client": "git+https://github.com/Vizzuality/microservice-client.git#1.0.3",
+    "async-client": "git+https://github.com/Vizzuality/async-client-nodejs.git#1.0.0",
+    "newrelic": "1.27.1"
   },
 
   "devDependencies": {

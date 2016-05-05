@@ -8,8 +8,12 @@
         "host": "MONGO_PORT_27017_TCP_ADDR",
         "port": "MONGO_PORT_27017_TCP_PORT"
     },
-    "cartoDB":{
+    "cartoDB": {
         "apiKey": "CARTODB_APIKEY",
         "user": "CARTODB_USER"
+    },
+    "service": {
+        "port": "PORT",
+        "uri": "URI"
     }
 }

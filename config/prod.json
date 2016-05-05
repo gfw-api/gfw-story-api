@@ -5,10 +5,6 @@
         "toFile": false,
         "dirLogFile": null
     },
-    "service": {
-        "uri": "http://gfw-story-api.herokuapp.com",
-        "port": null
-    },
     "cartoDB":{
         "table": "community_stories"
     }

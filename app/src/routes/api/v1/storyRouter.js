@@ -16,6 +16,7 @@ class StoryRouter {
 
         } catch (err) {
             logger.error(err);
+            throw err;
         }
     }
 

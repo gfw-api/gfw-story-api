@@ -7,12 +7,10 @@ develop:
   container_name: gfw-story-api-develop
   environment:
     NODE_ENV: dev
-    API_GATEWAY_URI: http://192.168.99.100:8000
     CARTODB_APIKEY: <apikey>
     CARTODB_USER: <user>
-    SELF_REGISTRY: "on"
-    API_GATEWAY_QUEUE_URL: redis://192.168.99.100:6379
-    API_GATEWAY_QUEUE_PROVIDER: redis
+    QUEUE_URL: redis://192.168.99.100:6379
+    QUEUE_PROVIDER: redis
   command: develop
   links:
     - mongo

@@ -1,16 +1,10 @@
 prod:
-  extends:
-    file: base.yml
-    service: base
-  container_name: gfw-story-api
-  environment:
-    NODE_ENV: prod
+  image: vizzuality/gfw-story-api:1.0.0
+  ports:
+    - "3500"
+  env_file:
+    - prod.env
   command: start
-  links:
-    - mongo
-  volumes:
-    - ./app:/opt/gfw-story-api/app
-mongo:
-  extends:
-    file: base.yml
-    service: mongo
+  log_driver: "gelf"
+  log_opt:
+    gelf-address: "udp://172.31.40.76:12201"

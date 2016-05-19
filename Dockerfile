@@ -18,9 +18,10 @@ COPY config /opt/$NAME/config
 WORKDIR /opt/$NAME
 
 ADD ./app /opt/$NAME/app
+RUN chown $USER:$USER /opt/$NAME
 
 # Tell Docker we are going to use this ports
-EXPOSE 3100 35729
+EXPOSE 3100
 USER $USER
 
 ENTRYPOINT ["./entrypoint.sh"]

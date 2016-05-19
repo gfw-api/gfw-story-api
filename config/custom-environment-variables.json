@@ -1,8 +1,8 @@
 {
     "apiGateway": {
         "uri": "API_GATEWAY_URI",
-        "queueUrl": "API_GATEWAY_QUEUE_URL",
-        "queueProvider": "API_GATEWAY_QUEUE_PROVIDER"
+        "queueUrl": "QUEUE_URL",
+        "queueProvider": "QUEUE_PROVIDER"
     },
     "mongodb": {
         "host": "MONGO_PORT_27017_TCP_ADDR",

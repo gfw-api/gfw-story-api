@@ -147,13 +147,15 @@ class StoryService {
     }
 
     static * getStories(){
-        let stories = yield cartoDBService.getStories();
+
         try {
+            let stories = yield cartoDBService.getStories();
             stories = StoryService.formatStories(stories);
             yield StoryService.cacheAllStories(stories);
             return StorySerializer.serialize(stories);
         } catch (e) {
             logger.error(e);
+            throw e;
         }
     }
 

@@ -3,7 +3,7 @@ test:
     file: base.yml
     service: base
   ports:
-    - "3100"
+    - "3500"
   container_name: gfw-story-api-test
   environment:
     NODE_ENV: test

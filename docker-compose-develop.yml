@@ -11,6 +11,7 @@ develop:
     CARTODB_USER: <user>
     QUEUE_URL: redis://192.168.99.100:6379
     QUEUE_PROVIDER: redis
+    QUEUE_NAME: mail
   command: develop
   links:
     - mongo

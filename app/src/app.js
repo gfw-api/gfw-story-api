@@ -11,7 +11,7 @@ var loader = require('loader');
 var validate = require('koa-validate');
 var mongoose = require('mongoose');
 var ErrorSerializer = require('serializers/errorSerializer');
-var mongoUri = process.env.MONGODB_URI || 'mongodb://' + config.get('mongodb.host') + ':' + config.get('mongodb.port') + '/' + config.get('mongodb.database');
+var mongoUri = process.env.MONGO_URI || 'mongodb://' + config.get('mongodb.host') + ':' + config.get('mongodb.port') + '/' + config.get('mongodb.database');
 
 var onDbReady = function(err) {
     if (err) {

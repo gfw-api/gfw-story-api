@@ -3,7 +3,7 @@
 var config = require('config');
 var logger = require('logger');
 var AsyncClient = require('async-client');
-const CHANNEL = 'mail';
+const CHANNEL = config.get('apiGateway.queueName');
 
 class MailService {
     constructor(){

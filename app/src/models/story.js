@@ -17,6 +17,7 @@ var Story = new Schema({
     lat: {type: Number, required: true},
     lng: {type: Number, required: true},
     userId: {type: String, trim: true},
+    hideUser: {type: Boolean, default: false},
     populatedUser: {type: Boolean, default: false}
 });
 

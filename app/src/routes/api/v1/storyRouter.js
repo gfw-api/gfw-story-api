@@ -40,7 +40,7 @@ class StoryRouter {
         logger.info('Deleting story by id %s', this.params.id);
 
         let story = yield StoryService.deleteStoryById(
-          this.params.id, this.query.loggedUser.id);
+          this.params.id, this.request.query.loggedUser.id);
 
         if (!story) {
           logger.error('Story not found');

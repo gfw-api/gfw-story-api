@@ -19,6 +19,15 @@
             "path": "/api/v1/story/:id"
         }]
     }, {
+        "url": "/story/:id",
+        "method": "DELETE",
+        "authenticated": true,
+        "endpoints": [{
+            "method": "DELETE",
+            "baseUrl": "#(service.uri)",
+            "path": "/api/v1/story/:id"
+        }]
+    }, {
         "url": "/story/user/:user_id",
         "method": "GET",
         "endpoints": [{

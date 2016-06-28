@@ -173,6 +173,19 @@ class StoryService {
         }
     }
 
+    static * deleteStoryById(id, userId) {
+        let story = yield Story.where({
+          _id: id,
+          userId: userId
+        }).findOneAndRemove();
+
+        if (story) {
+          yield cartoDBService.deleteStoryById(id);
+        }
+
+        return StorySerializer.serialize(StoryService.formatStory(story));
+    }
+
 }
 
 module.exports = StoryService;

@@ -35,11 +35,27 @@ class StoryRouter {
         this.assert(this.params.id, 400, 'Id param required');
         this.body = yield StoryService.getStoryById(this.params.id);
     }
+
+    static * deleteStory() {
+        logger.info('Deleting story by id %s', this.params.id);
+
+        let story = yield StoryService.deleteStoryById(
+          this.params.id, this.query.loggedUser.id);
+
+        if (!story) {
+          logger.error('Story not found');
+          this.throw(404, 'Story not found');
+          return;
+        }
+
+        this.body = story;
+    }
 }
 
 router.get('/', StoryRouter.getStories);
 router.get('/user/:user_id', StoryRouter.getStoriesByUser);
 router.get('/:id', StoryValidator.getStoryById, StoryRouter.getStoryById);
+router.delete('/:id', StoryValidator.getStoryById, StoryRouter.deleteStory);
 router.post('/', StoryRouter.createStory);
 
 module.exports = router;

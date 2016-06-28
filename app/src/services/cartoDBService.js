@@ -6,6 +6,7 @@ var Mustache = require('mustache');
 Mustache.escapeHtml = function (text) { return text; };
 
 const SELECT_SQL = 'SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id FROM {{{table}}} {{#id}} WHERE cartodb_id = {{{id}}} {{/id}} {{#userId}} WHERE user_id = \'{{{userId}}}\' {{/userId}} ORDER BY date ASC';
+const DELETE_SQL = 'DELETE FROM {{{table}}} WHERE cartodb_id = {{{id}}} LIMIT 1';
 const INSERT_SQL = 'INSERT INTO {{{table}}} (name, details, title, visible, location, email, date, user_id, media, the_geom) VALUES ({{{name}}}, {{{details}}},{{{title}}}, {{{visible}}}, {{{location}}},{{{email}}}, {{{date}}}, {{{userId}}}, {{{media}}},st_setsrid(ST_GeomFromGeoJSON({{{theGeom}}}),4326))' +
     ' RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id';
 
@@ -65,6 +66,14 @@ class CartoDBService {
 
     * getStoriesByUser(user_id){
         let data = yield executeThunk(this.client, SELECT_SQL, {table: config.get('cartoDB.table'), userId: user_id});
+        if(data && data.rows && data.rows.length > 0){
+            return data.rows;
+        }
+        return null;
+    }
+
+    * deleteStoryById(id) {
+        let data = yield executeThunk(this.client, DELETE_SQL, {table: config.get('cartoDB.table'), id: id});
         if(data && data.rows && data.rows.length > 0){
             return data.rows;
         }

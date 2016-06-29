@@ -175,7 +175,7 @@ class StoryService {
 
     static * deleteStoryById(id, userId) {
         let story = yield Story.where({
-          _id: id,
+          id: id,
           userId: userId
         }).findOneAndRemove();
 

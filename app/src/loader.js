@@ -12,6 +12,8 @@ module.exports = (function () {
     var routesFiles = fs.readdirSync(path);
     var existIndexRouter = false;
     routesFiles.forEach(function (file) {
+      if (/^\..*/.test(file)) { return; }
+
       var newPath = path ? (path + '/' + file) : file;
       var stat = fs.statSync(newPath);
 

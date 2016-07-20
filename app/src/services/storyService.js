@@ -20,6 +20,7 @@ class StoryService {
         if (!story) {
             return {};
         }
+
         let newStory = {
             name: story.name,
             title: story.title,
@@ -31,21 +32,26 @@ class StoryService {
             date: story.date,
             email: story.email,
             location: story.location,
-            userId: story.user_id,
             media: JSON.parse(story.media),
             lat: story.lat,
             lng: story.lng
         };
+
+        if (story.hideUser !== true) {
+            newStory.userId = story.user_id;
+        }
+
         return newStory;
     }
 
     static * createStory(data){
         //if user is logged. this param is add by api-gateway
-        if (data.loggedUser) {
+        if (data.loggedUser && data.hideUser !== true) {
             data.userId = data.loggedUser.id;
             data.name = data.loggedUser.fullName ? data.loggedUser.fullName  : '';
             data.email = data.loggedUser.email ? data.loggedUser.email : '';
         }
+
         let story = yield cartoDBService.createStory(data);
         logger.debug('Saving new story in cache');
         let storyFormat = StoryService.formatStory(story);
@@ -81,15 +87,12 @@ class StoryService {
             logger.error(e);
             return null;
         }
-
-
     }
 
     static * getStoryById(id){
         logger.debug('Searching in cache');
-        let story = yield Story.findOne({
-            id: id
-        });
+        let story = yield Story.findOne({ id: id });
+
         if (!story) {
             logger.debug('Not find in cache. Obtaining of cartodb');
             story = yield cartoDBService.getStoryById(id);
@@ -103,24 +106,25 @@ class StoryService {
         } else {
             logger.debug('Found in cache. Returning');
         }
+
         if (story.userId && !story.populatedUser) {
             logger.debug('Populating name and email from user api');
             let user = yield StoryService.getUser(story.userId);
             if (user ) {
-
                 story.name = user.fullName;
                 story.email = user.email;
                 story.populatedUser = true;
 
-                try{
+                try {
                     yield story.save();
-                }catch(e){
+                } catch(e) {
                     logger.error(e);
                 }
             } else {
                 logger.warn('User not exist');
             }
         }
+
         // delete populatedUser  property  for not show this property to final user
         delete story.populatedUser;
         return StorySerializer.serialize(story);
@@ -147,7 +151,6 @@ class StoryService {
     }
 
     static * getStories(){
-
         try {
             let stories = yield cartoDBService.getStories();
             stories = StoryService.formatStories(stories);
@@ -159,6 +162,29 @@ class StoryService {
         }
     }
 
+    static * getStoriesByUser(user_id){
+        try {
+            let stories = yield cartoDBService.getStoriesByUser(user_id);
+            stories = StoryService.formatStories(stories);
+            return StorySerializer.serialize(stories);
+        } catch (e) {
+            logger.error(e);
+            throw e;
+        }
+    }
+
+    static * deleteStoryById(id, userId) {
+        let story = yield Story.where({
+          id: id,
+          userId: userId
+        }).findOneAndRemove();
+
+        if (story) {
+          yield cartoDBService.deleteStoryById(id);
+        }
+
+        return StorySerializer.serialize(StoryService.formatStory(story));
+    }
 
 }
 

@@ -5,6 +5,7 @@ var config = require('config');
 var logger = require('logger');
 var path = require('path');
 var koa = require('koa');
+var koaQs = require('koa-qs');
 var bodyParser = require('koa-bodyparser');
 var koaLogger = require('koa-logger');
 var loader = require('loader');
@@ -27,6 +28,7 @@ var onDbReady = function(err) {
         app.use(koaLogger());
     }
 
+    koaQs(app, 'extended');
     app.use(bodyParser({
         jsonLimit: '50mb'
     }));

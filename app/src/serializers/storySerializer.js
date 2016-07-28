@@ -8,7 +8,7 @@ var storySerializer = new JSONAPISerializer('story', {
         return attribute;
     },
     media:{
-        attributes: ['url', 'embed_url', 'preview_url', 'mime_type', 'order']
+        attributes: ['url', 'embedUrl', 'previewUrl', 'mime_type', 'order']
     },
     keyForAttribute: 'camelCase'
 });

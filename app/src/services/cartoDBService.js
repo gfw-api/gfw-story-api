@@ -12,7 +12,7 @@ const INSERT_SQL = `
       name, details, title, visible, location, email, date, user_id,
       media, the_geom
     ) VALUES (
-      {{{name}}}, {{{details}}}, {{{title}}}, {{{visible}}},
+      {{{name}}}, {{details}}, {{title}}, {{{visible}}},
       {{{location}}}, {{{email}}}, {{{date}}}, {{{userId}}},
       {{{media}}}, ST_SetSRID(ST_GeomFromGeoJSON({{{theGeom}}}), 4326)
     ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,

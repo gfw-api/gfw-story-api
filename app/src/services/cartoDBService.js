@@ -31,7 +31,7 @@ var executeThunk = function(client, sql, params){
 };
 
 function wrapQuotes(text, isEscape){
-    return `'${isEscape ? escape(text): text}'`;
+    return `'${isEscape && text.replace ? text.replace(/'/g, '\'\''): text}'`;
 }
 
 class CartoDBService {

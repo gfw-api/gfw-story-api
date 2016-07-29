@@ -32,7 +32,7 @@ class StoryService {
             date: story.date,
             email: story.email,
             location: story.location,
-            media: JSON.parse(story.media),
+            media: story.media ? JSON.parse(story.media) : null,
             lat: story.lat,
             lng: story.lng
         };

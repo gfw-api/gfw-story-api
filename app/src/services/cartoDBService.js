@@ -12,7 +12,7 @@ const INSERT_SQL = `
       name, details, title, visible, location, email, date, user_id,
       media, the_geom
     ) VALUES (
-      {{{name}}}, {{details}}, {{title}}, {{{visible}}},
+      {{{name}}}, {{{details}}}, {{{title}}}, {{{visible}}},
       {{{location}}}, {{{email}}}, {{{date}}}, {{{userId}}},
       {{{media}}}, ST_SetSRID(ST_GeomFromGeoJSON({{{theGeom}}}), 4326)
     ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,
@@ -30,8 +30,8 @@ var executeThunk = function(client, sql, params){
     };
 };
 
-function wrapQuotes(text){
-    return '\'' + text + '\'';
+function wrapQuotes(text, isEscape){
+    return `'${isEscape ? escape(text): text}'`;
 }
 
 class CartoDBService {
@@ -42,16 +42,16 @@ class CartoDBService {
 
     * createStory(story){
         var params = {
-            name: wrapQuotes(story.name),
-            details: story.details ? wrapQuotes(story.details) : 'null',
-            title: wrapQuotes(story.title),
-            visible: story.visible ? wrapQuotes(story.visible) : false,
-            location: story.location ? wrapQuotes(story.location) : 'null',
-            email: wrapQuotes(story.email),
-            date: story.date ? wrapQuotes(story.date) : 'null',
-            userId: story.userId ? wrapQuotes(story.userId) : 'null',
-            media: wrapQuotes(JSON.stringify(story.media)),
-            theGeom: wrapQuotes(JSON.stringify(story.geojson)),
+            name: wrapQuotes(story.name, true),
+            details: story.details ? wrapQuotes(story.details, true) : 'null',
+            title: wrapQuotes(story.title, true),
+            visible: story.visible ? wrapQuotes(story.visible, true) : false,
+            location: story.location ? wrapQuotes(story.location, true) : 'null',
+            email: wrapQuotes(story.email, true),
+            date: story.date ? wrapQuotes(story.date, true) : 'null',
+            userId: story.userId ? wrapQuotes(story.userId, true) : 'null',
+            media: wrapQuotes(JSON.stringify(story.media), false),
+            theGeom: wrapQuotes(JSON.stringify(story.geojson), false),
             table: config.get('cartoDB.table')
         };
 

@@ -4,7 +4,7 @@
     "urls": [{
         "url": "/story",
         "method": "POST",
-        "authenticated": true,
+        
         "endpoints": [{
             "method": "POST",
             "baseUrl": "#(service.uri)",

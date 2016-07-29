@@ -44,13 +44,13 @@ class CartoDBService {
         var params = {
             name: story.name ? wrapQuotes(story.name, true): 'null',
             details: story.details ? wrapQuotes(story.details, true) : 'null',
-            title: wrapQuotes(story.title, true),
+            title: story.title ? wrapQuotes(story.title, true): 'null',
             visible: story.visible ? wrapQuotes(story.visible, true) : false,
             location: story.location ? wrapQuotes(story.location, true) : 'null',
-            email: wrapQuotes(story.email, true),
+            email: story.email ? wrapQuotes(story.email, true) : 'null',
             date: story.date ? wrapQuotes(story.date, true) : 'null',
             userId: story.userId ? wrapQuotes(story.userId, true) : 'null',
-            media: wrapQuotes(JSON.stringify(story.media), false),
+            media: story.media ? wrapQuotes(JSON.stringify(story.media), false) : 'null',
             theGeom: wrapQuotes(JSON.stringify(story.geojson), false),
             table: config.get('cartoDB.table')
         };

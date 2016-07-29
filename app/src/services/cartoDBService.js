@@ -31,7 +31,7 @@ var executeThunk = function(client, sql, params){
 };
 
 function wrapQuotes(text, isEscape){
-    return `'${isEscape && text.replace ? text.replace(/'/g, '\'\''): text}'`;
+    return `'${isEscape && text && text.replace ? text.replace(/'/g, '\'\''): text}'`;
 }
 
 class CartoDBService {
@@ -42,7 +42,7 @@ class CartoDBService {
 
     * createStory(story){
         var params = {
-            name: wrapQuotes(story.name, true),
+            name: story.name ? wrapQuotes(story.name, true): 'null',
             details: story.details ? wrapQuotes(story.details, true) : 'null',
             title: wrapQuotes(story.title, true),
             visible: story.visible ? wrapQuotes(story.visible, true) : false,

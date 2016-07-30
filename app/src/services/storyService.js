@@ -72,7 +72,7 @@ class StoryService {
     static * getUser(id) {
         try{
             logger.debug('Doing request to /user');
-            let result = yield require('microservice-client').requestToMicroservice({
+            let result = yield require('vizz.microservice-client').requestToMicroservice({
                 uri:  '/user/' + id,
                 method: 'GET',
                 json: true

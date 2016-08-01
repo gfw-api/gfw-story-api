@@ -183,7 +183,7 @@ class StoryService {
           yield cartoDBService.deleteStoryById(id);
         }
 
-        return StorySerializer.serialize(StoryService.formatStory(story));
+        return StorySerializer.serialize(story);
     }
 
 }

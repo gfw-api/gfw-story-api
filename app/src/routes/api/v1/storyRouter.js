@@ -38,17 +38,21 @@ class StoryRouter {
 
     static * deleteStory() {
         logger.info('Deleting story by id %s', this.params.id);
+            try{
+            let story = yield StoryService.deleteStoryById(
+              this.params.id, this.request.query.loggedUser.id);
 
-        let story = yield StoryService.deleteStoryById(
-          this.params.id, this.request.query.loggedUser.id);
+            if (!story) {
+              logger.error('Story not found');
+              this.throw(404, 'Story not found');
+              return;
+            }
 
-        if (!story) {
-          logger.error('Story not found');
-          this.throw(404, 'Story not found');
-          return;
+            this.body = story;
+        } catch(err){
+            logger.error(err);
+            throw err;
         }
-
-        this.body = story;
     }
 }
 

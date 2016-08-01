@@ -6,7 +6,7 @@ var Mustache = require('mustache');
 Mustache.escapeHtml = function (text) { return text; };
 
 const SELECT_SQL = 'SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id FROM {{{table}}} {{#id}} WHERE cartodb_id = {{{id}}} {{/id}} {{#userId}} WHERE user_id = \'{{{userId}}}\' {{/userId}} ORDER BY date ASC';
-const DELETE_SQL = 'DELETE FROM {{{table}}} WHERE cartodb_id = {{{id}}} LIMIT 1';
+const DELETE_SQL = 'DELETE FROM {{{table}}} WHERE cartodb_id = {{{id}}}';
 const INSERT_SQL = `
     INSERT INTO {{{table}}} (
       name, details, title, visible, location, email, date, user_id,

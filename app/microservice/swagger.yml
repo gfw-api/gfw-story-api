@@ -10,13 +10,44 @@ schemes:
   - http
 # will be prefixed to all paths
 basePath: /api/v1
+
+consumes:
+  - application/json
 produces:
   - application/vnd.api+json
 
 paths:
   /story/{id}:
     get:
-      description: Returns story based on a single ID, if the story not exist return 404
+      description: |
+        Returns story based on a single ID, if the story not exist return 404
+        ### Example URL request
+        ```
+        {{host}}/story/23
+        ```
+        ### Example response
+        ```json
+        {
+          "data": [{
+              "type": "story",
+              "id": "23",
+              "attributes": {
+                  "name": null,
+                  "title": "Title",
+                  "createdAt": "2016-08-01T09:02:07Z",
+                  "visible": false,
+                  "details": null,
+                  "date": "2016-08-01T00:00:00Z",
+                  "email": "vizz@vizzuality.com",
+                  "location": null,
+                  "userId": "573c9295aafb8d010001745b",
+                  "media": [],
+                  "lat": -1.07437329723863,
+                  "lng": 1.98413085937498
+              }
+          }]
+        }
+        ```
       operationId: getStoryById
       produces:
         - application/vnd.api+json
@@ -45,11 +76,99 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Errors'
-
+    delete:
+      description: |
+        Remove story by id. If story doesn't exist return 404 error.
+        **Is necesary authentication to delete story.**
+        ### Example URL request
+        ```
+        {{host}}/story/23
+        ```
+        ### Example response
+        ```json
+        {
+          "data": [{
+              "type": "story",
+              "id": "23",
+              "attributes": {
+                  "name": null,
+                  "title": "Title",
+                  "createdAt": "2016-08-01T09:02:07Z",
+                  "visible": false,
+                  "details": null,
+                  "date": "2016-08-01T00:00:00Z",
+                  "email": "vizz@vizzuality.com",
+                  "location": null,
+                  "userId": "573c9295aafb8d010001745b",
+                  "media": [],
+                  "lat": -1.07437329723863,
+                  "lng": 1.98413085937498
+              }
+          }]
+        }
+        ```
+      operationId: deleteStory
+      produces:
+        - application/vnd.api+json
+      tags:
+        - Story
+      parameters:
+        - name: id
+          in: path
+          description: ID of story to delete
+          required: true
+          type: string
+      responses:
+        200:
+          description: Story deleted
+          schema:
+            $ref: '#/definitions/StoryAPI'
+        404:
+          description: Story not found
+          schema:
+            $ref: '#/definitions/Errors'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
   /story:
     post:
       summary: Create story. If user is logged, save the id user in the story
-      description: Create story. If user is logged, save the id user in the story
+      description: |
+        Create story. If user is logged, save the id user in the story.
+        **Is necesary authentication to create story.**
+        ### Example response
+        ```json
+        {
+            "data": {
+                "type": "story",
+                "id": "90",
+                "attributes": {
+                    "name": null,
+                    "title": "Test",
+                    "createdAt": "2016-08-03T09:07:37.000Z",
+                    "visible": false,
+                    "details": "Details",
+                    "date": "2016-08-03T00:00:00.000Z",
+                    "email": null,
+                    "location": null,
+                    "userId": null,
+                    "media": [{
+                        "embedUrl": "https://www.youtube.com/watch?v=VQXUnesPJT0",
+                        "order": 0
+                    }],
+                    "lat": 40.6239797365862,
+                    "lng": -5.34375000000002
+                }
+            }
+        }
+        ```
+      consumes:
+        - application/json
       produces:
         - application/vnd.api+json
       tags:
@@ -58,7 +177,29 @@ paths:
       parameters:
         - name: story
           in: body
-          description: Story to save
+          description: |
+            Story to save
+            ##### Body example
+            ```json
+            {
+                "media": [{
+                    "embedUrl": "https://www.youtube.com/watch?v=VQXUnesPJT0",
+                    "order": 0
+                }],
+                "geojson": {
+                    "type": "Point",
+                    "coordinates": [-5.343750000000016, 40.623979736586236]
+                },
+                "lat": 40.623979736586236,
+                "lng": -5.343750000000016,
+                "title": "Test",
+                "location": "",
+                "date": "2016-08-03",
+                "details": "Details",
+                "video": "https://www.youtube.com/watch?v=VQXUnesPJT0",
+                "hideUser": true
+            }
+            ```
           required: true
           schema:
             $ref: '#/definitions/StoryCreate'
@@ -82,7 +223,32 @@ paths:
 
     get:
       summary: Obtain all stories
-      description: Obtain all stories
+      description: |
+        Obtain all stories
+
+        ### Example response
+        ```json
+        {
+          "data": [{
+              "type": "story",
+              "id": "84",
+              "attributes": {
+                  "name": null,
+                  "title": "Title",
+                  "createdAt": "2016-08-01T09:02:07Z",
+                  "visible": false,
+                  "details": null,
+                  "date": "2016-08-01T00:00:00Z",
+                  "email": "vizz@vizzuality.com",
+                  "location": null,
+                  "userId": "573c9295aafb8d010001745b",
+                  "media": [],
+                  "lat": -1.07437329723863,
+                  "lng": 1.98413085937498
+              }
+          }]
+        }
+        ```
       produces:
         - application/vnd.api+json
       tags:
@@ -106,6 +272,63 @@ paths:
           schema:
             $ref: '#/definitions/Errors'
 
+  /user/{userId}:
+    get:
+      summary: Obtain all stories of a user
+      description: |
+        Obtain all stories of a user
+
+        ### Example response
+        ```json
+        {
+          "data": [{
+              "type": "story",
+              "id": "84",
+              "attributes": {
+                  "name": null,
+                  "title": "Title",
+                  "createdAt": "2016-08-01T09:02:07Z",
+                  "visible": false,
+                  "details": null,
+                  "date": "2016-08-01T00:00:00Z",
+                  "email": "vizz@vizzuality.com",
+                  "location": null,
+                  "userId": "573c9295aafb8d010001745b",
+                  "media": [],
+                  "lat": -1.07437329723863,
+                  "lng": 1.98413085937498
+              }
+          }]
+        }
+        ```
+      produces:
+        - application/vnd.api+json
+      tags:
+        - Story
+      operationId: getStoriesByUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user
+          required: true
+          type: string
+      responses:
+        200:
+          description: The all stories
+          schema:
+            $ref: '#/definitions/StoryAPI'
+        400:
+          description: Validate error
+          schema:
+            $ref: '#/definitions/Errors'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
 definitions:
   Errors:
     type: object

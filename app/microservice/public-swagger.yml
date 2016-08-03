@@ -49,7 +49,7 @@ paths:
       produces:
         - application/vnd.api+json
       tags:
-        - Story
+        - STORY
       parameters:
         - name: id
           in: path
@@ -108,7 +108,7 @@ paths:
       produces:
         - application/vnd.api+json
       tags:
-        - Story
+        - STORY
       parameters:
         - name: id
           in: path
@@ -169,7 +169,7 @@ paths:
       produces:
         - application/vnd.api+json
       tags:
-        - Story
+        - STORY
       operationId: createStory
       parameters:
         - name: story
@@ -249,7 +249,7 @@ paths:
       produces:
         - application/vnd.api+json
       tags:
-        - Story
+        - STORY
       operationId: getStories
       responses:
         200:
@@ -301,7 +301,7 @@ paths:
       produces:
         - application/vnd.api+json
       tags:
-        - Story
+        - STORY
       operationId: getStoriesByUser
       parameters:
         - name: userId

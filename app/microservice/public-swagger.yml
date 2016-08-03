@@ -269,7 +269,7 @@ paths:
           schema:
             $ref: '#/definitions/Errors'
 
-  /user/{userId}:
+  /story/user/{userId}:
     get:
       summary: Obtain all stories of a user
       description: |

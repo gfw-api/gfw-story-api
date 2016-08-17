@@ -46,10 +46,12 @@ class StoryService {
 
     static * createStory(data){
         //if user is logged. this param is add by api-gateway
-        if (data.loggedUser && data.hideUser !== true) {
+        if (data.loggedUser) {
             data.userId = data.loggedUser.id;
-            data.name = data.loggedUser.fullName ? data.loggedUser.fullName  : '';
-            data.email = data.loggedUser.email ? data.loggedUser.email : '';
+            if(data.hideUser !== true) {
+                data.name = data.loggedUser.fullName ? data.loggedUser.fullName  : '';
+                data.email = data.loggedUser.email ? data.loggedUser.email : '';
+            }
         }
 
         let story = yield cartoDBService.createStory(data);

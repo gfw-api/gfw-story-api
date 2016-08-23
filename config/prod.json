@@ -6,6 +6,6 @@
         "dirLogFile": null
     },
     "cartoDB":{
-        "table": "gfw_stories_new"
+        "table": "gfw_stories_prod"
     }
 }

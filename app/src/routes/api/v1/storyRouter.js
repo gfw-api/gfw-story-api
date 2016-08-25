@@ -33,7 +33,12 @@ class StoryRouter {
     static * getStoryById() {
         logger.info('Obtaining stories by id %s', this.params.id);
         this.assert(this.params.id, 400, 'Id param required');
-        this.body = yield StoryService.getStoryById(this.params.id, this.query.fields);
+        let story = yield StoryService.getStoryById(this.params.id, this.query.fields);
+        if(!story){
+            this.throw(404, 'Story not found');
+            return;
+        }
+        this.body = story;
     }
 
     static * deleteStory() {

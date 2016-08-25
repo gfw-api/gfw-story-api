@@ -115,8 +115,7 @@ class StoryService {
             logger.debug('Not find in cache. Obtaining of cartodb');
             story = yield cartoDBService.getStoryById(id);
             if (!story) {
-                this.throw(404, 'Story not found');
-                return;
+                return null;
             }
             story = StoryService.formatStory(story);
             story = yield new Story(story).save();

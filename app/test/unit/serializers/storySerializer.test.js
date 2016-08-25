@@ -58,7 +58,6 @@ describe('Story serializer test', function() {
         data.attributes.should.have.property('date');
         data.attributes.should.have.property('email');
         data.attributes.should.have.property('location');
-        data.attributes.should.have.property('userId');
         data.attributes.should.have.property('media');
 
         data.attributes.name.should.be.equal(story.name);
@@ -70,7 +69,6 @@ describe('Story serializer test', function() {
         data.attributes.date.should.be.equal(story.date);
         data.attributes.email.should.be.equal(story.email);
         data.attributes.location.should.be.equal(story.location);
-        data.attributes.userId.should.be.equal(story.userId);
         data.attributes.media.should.be.length(story.media.length);
 
     });

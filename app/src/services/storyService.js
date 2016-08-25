@@ -34,7 +34,8 @@ class StoryService {
             location: story.location,
             media: story.media ? JSON.parse(story.media) : null,
             lat: story.lat,
-            lng: story.lng
+            lng: story.lng,
+            hideUser: story.hide_user || story.hideUser
         };
 
         if (story.hideUser !== true) {
@@ -49,24 +50,39 @@ class StoryService {
         if (data.loggedUser) {
             data.userId = data.loggedUser.id;
             if(data.hideUser !== true) {
-                data.name = data.loggedUser.fullName ? data.loggedUser.fullName  : '';
-                data.email = data.loggedUser.email ? data.loggedUser.email : '';
+                data.name = data.name ? data.name : data.loggedUser.fullName;
+                data.email = data.email ? data.email : data.loggedUser.email;
+            } else {
+                logger.info('Hide User. Removing name and email');
+                data.name = '';
+                data.email = '';
             }
         }
 
         let story = yield cartoDBService.createStory(data);
-        logger.debug('Saving new story in cache');
+        logger.debug('Saving new story in cache', story);
         let storyFormat = StoryService.formatStory(story);
         yield new Story(storyFormat).save();
         logger.debug('Checking if email is defined to send email');
         if(storyFormat.email){
             mailService.sendMail(config.get('mailStory.template'), {
                 name: storyFormat.name,
-                story_url: config.get('mailStory.urlDetail') + storyFormat.id
+                story_url: config.get('mailStory.myStories')
             },[{
                 address: storyFormat.email
             }]);
+
         }
+        logger.info('sending email to WRI');
+        let wriRecipients = config.get('wriMailStory.recipients').split(',');
+        wriRecipients = wriRecipients.map(function(mail){
+            return {
+                address: mail
+            };
+        });
+        mailService.sendMail(config.get('wriMailStory.template'), {
+            story_url: config.get('mailStory.urlDetail') + storyFormat.id
+        },wriRecipients);
 
         return StorySerializer.serialize(storyFormat);
     }
@@ -109,7 +125,7 @@ class StoryService {
             logger.debug('Found in cache. Returning');
         }
 
-        if (story.userId && !story.populatedUser) {
+        if (story.userId && !story.hideUser && !story.populatedUser) {
             logger.debug('Populating name and email from user api');
             let user = yield StoryService.getUser(story.userId);
             if (user ) {

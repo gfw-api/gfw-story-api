@@ -34,7 +34,8 @@ class StoryService {
             location: story.location,
             media: story.media ? JSON.parse(story.media) : null,
             lat: story.lat,
-            lng: story.lng
+            lng: story.lng,
+            hideUser: story.hide_user || story.hideUser
         };
 
         if (story.hideUser !== true) {
@@ -52,6 +53,7 @@ class StoryService {
                 data.name = data.name ? data.name : data.loggedUser.fullName;
                 data.email = data.email ? data.email : data.loggedUser.email;
             } else {
+                logger.info('Hide User. Removing name and email');
                 data.name = '';
                 data.email = '';
             }
@@ -123,7 +125,7 @@ class StoryService {
             logger.debug('Found in cache. Returning');
         }
 
-        if (story.userId && !story.populatedUser) {
+        if (story.userId && !story.hideUser && !story.populatedUser) {
             logger.debug('Populating name and email from user api');
             let user = yield StoryService.getUser(story.userId);
             if (user ) {

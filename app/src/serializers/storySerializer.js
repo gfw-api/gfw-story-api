@@ -2,8 +2,9 @@
 
 var logger = require('logger');
 var JSONAPISerializer = require('jsonapi-serializer').Serializer;
+const ALL_ATTRIBUTES = ['name', 'title', 'createdAt', 'created_at', 'updatedAt', 'updated_at', 'visible', 'details', 'date', 'email', 'location', 'media', 'lat', 'lng', 'hideUser'];
 var storySerializer = new JSONAPISerializer('story', {
-    attributes: ['name', 'title', 'createdAt', 'created_at', 'updatedAt', 'updated_at', 'visible', 'details', 'date', 'email', 'location', 'media', 'lat', 'lng', 'hideUser'],
+    attributes: ALL_ATTRIBUTES,
     typeForAttribute: function(attribute, record) {
         return attribute;
     },
@@ -18,6 +19,8 @@ class StorySerializer {
     static serialize(data, attributes) {
         if (attributes) {
             storySerializer.opts.attributes = attributes.split(',');
+        } else {
+            storySerializer.opts.attributes = ALL_ATTRIBUTES;
         }
 
         return storySerializer.serialize(data);

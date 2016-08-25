@@ -107,7 +107,7 @@ class StoryService {
         }
     }
 
-    static * getStoryById(id){
+    static * getStoryById(id, fields){
         logger.debug('Searching in cache');
         let story = yield Story.findOne({ id: id });
 
@@ -145,7 +145,7 @@ class StoryService {
 
         // delete populatedUser  property  for not show this property to final user
         delete story.populatedUser;
-        return StorySerializer.serialize(story);
+        return StorySerializer.serialize(story, fields);
     }
 
     static formatStories(stories) {
@@ -168,23 +168,23 @@ class StoryService {
         }
     }
 
-    static * getStories(){
+    static * getStories(fields){
         try {
             let stories = yield cartoDBService.getStories();
             stories = StoryService.formatStories(stories);
             yield StoryService.cacheAllStories(stories);
-            return StorySerializer.serialize(stories);
+            return StorySerializer.serialize(stories, fields);
         } catch (e) {
             logger.error(e);
             throw e;
         }
     }
 
-    static * getStoriesByUser(user_id){
+    static * getStoriesByUser(user_id, fields){
         try {
             let stories = yield cartoDBService.getStoriesByUser(user_id);
             stories = StoryService.formatStories(stories);
-            return StorySerializer.serialize(stories);
+            return StorySerializer.serialize(stories, fields);
         } catch (e) {
             logger.error(e);
             throw e;

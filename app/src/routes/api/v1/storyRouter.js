@@ -22,18 +22,23 @@ class StoryRouter {
 
     static * getStories() {
         logger.info('Obtaining stories');
-        this.body = yield StoryService.getStories();
+        this.body = yield StoryService.getStories(this.query.fields);
     }
 
     static * getStoriesByUser() {
         logger.info('Obtaining stories for user with ID', this.params.user_id);
-        this.body = yield StoryService.getStoriesByUser(this.params.user_id);
+        this.body = yield StoryService.getStoriesByUser(this.params.user_id, this.query.fields);
     }
 
     static * getStoryById() {
         logger.info('Obtaining stories by id %s', this.params.id);
         this.assert(this.params.id, 400, 'Id param required');
-        this.body = yield StoryService.getStoryById(this.params.id);
+        let story = yield StoryService.getStoryById(this.params.id, this.query.fields);
+        if(!story){
+            this.throw(404, 'Story not found');
+            return;
+        }
+        this.body = story;
     }
 
     static * deleteStory() {

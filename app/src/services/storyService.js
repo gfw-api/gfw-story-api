@@ -49,8 +49,11 @@ class StoryService {
         if (data.loggedUser) {
             data.userId = data.loggedUser.id;
             if(data.hideUser !== true) {
-                data.name = data.loggedUser.fullName ? data.loggedUser.fullName  : '';
-                data.email = data.loggedUser.email ? data.loggedUser.email : '';
+                data.name = data.name ? data.name : data.loggedUser.fullName;
+                data.email = data.email ? data.email : data.loggedUser.email;
+            } else {
+                data.name = '';
+                data.email = '';
             }
         }
 
@@ -62,11 +65,22 @@ class StoryService {
         if(storyFormat.email){
             mailService.sendMail(config.get('mailStory.template'), {
                 name: storyFormat.name,
-                story_url: config.get('mailStory.urlDetail') + storyFormat.id
+                story_url: config.get('mailStory.myStories')
             },[{
                 address: storyFormat.email
             }]);
+
         }
+        logger.info('sending email to WRI');
+        let wriRecipients = config.get('wriMailStory.recipients').split(',');
+        wriRecipients = wriRecipients.map(function(mail){
+            return {
+                address: mail
+            };
+        });
+        mailService.sendMail(config.get('wriMailStory.template'), {
+            story_url: config.get('mailStory.urlDetail') + storyFormat.id
+        },wriRecipients);
 
         return StorySerializer.serialize(storyFormat);
     }

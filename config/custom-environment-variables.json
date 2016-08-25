@@ -16,5 +16,8 @@
     "service": {
         "port": "PORT",
         "uri": "URI"
+    },
+    "wriMailStory":{
+        "recipients" : "WRI_MAIL_RECIPIENTS"
     }
 }

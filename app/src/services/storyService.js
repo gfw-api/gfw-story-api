@@ -60,7 +60,7 @@ class StoryService {
         }
 
         let story = yield cartoDBService.createStory(data);
-        logger.debug('Saving new story in cache');
+        logger.debug('Saving new story in cache', story);
         let storyFormat = StoryService.formatStory(story);
         yield new Story(storyFormat).save();
         logger.debug('Checking if email is defined to send email');

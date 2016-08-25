@@ -18,7 +18,7 @@ const INSERT_SQL = `
       {{{media}}}, ST_SetSRID(ST_GeomFromGeoJSON({{{theGeom}}}), 4326), {{{hideUser}}}
     ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,
       email, created_at, name, title, visible, date, location, cartodb_id
-      as id, media, user_id`;
+      as id, media, user_id, hide_user`;
 
 var executeThunk = function(client, sql, params){
     return function(callback){

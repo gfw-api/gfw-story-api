@@ -52,7 +52,7 @@ class StoryService {
             if(data.hideUser === true) {
                 logger.info('Hide User. Removing name and email');
                 data.name = '';
-                data.email = '';                
+                data.email = '';
             }
         }
 
@@ -121,23 +121,23 @@ class StoryService {
             logger.debug('Found in cache. Returning');
         }
 
-        if (story.userId && !story.hideUser && !story.populatedUser) {
-            logger.debug('Populating name and email from user api');
-            let user = yield StoryService.getUser(story.userId);
-            if (user ) {
-                story.name = user.fullName;
-                story.email = user.email;
-                story.populatedUser = true;
-
-                try {
-                    yield story.save();
-                } catch(e) {
-                    logger.error(e);
-                }
-            } else {
-                logger.warn('User not exist');
-            }
-        }
+        // if (story.userId && !story.hideUser && !story.populatedUser) {
+        //     logger.debug('Populating name and email from user api');
+        //     let user = yield StoryService.getUser(story.userId);
+        //     if (user ) {
+        //         story.name = user.fullName;
+        //         story.email = user.email;
+        //         story.populatedUser = true;
+        //
+        //         try {
+        //             yield story.save();
+        //         } catch(e) {
+        //             logger.error(e);
+        //         }
+        //     } else {
+        //         logger.warn('User not exist');
+        //     }
+        // }
 
         // delete populatedUser  property  for not show this property to final user
         delete story.populatedUser;

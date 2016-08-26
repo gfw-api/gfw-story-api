@@ -255,6 +255,12 @@ paths:
         - application/vnd.api+json
       tags:
         - STORY
+      parameters:
+        - name: fields
+          in: query
+          description: Fields to serialize (sepparated by comma) of the story (?fields=name,title)
+          required: false
+          type: string
       operationId: getStories
       responses:
         200:
@@ -313,6 +319,11 @@ paths:
           in: path
           description: ID of user
           required: true
+          type: string
+        - name: fields
+          in: query
+          description: Fields to serialize (sepparated by comma) of the story (?fields=name,title)
+          required: false
           type: string
       responses:
         200:

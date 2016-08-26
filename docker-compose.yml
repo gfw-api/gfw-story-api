@@ -1,5 +1,5 @@
 prod:
-  image: vizzuality/gfw-story-api:1.1.0${STAGING}
+  image: vizzuality/gfw-story-api:1.1.1${STAGING}
   ports:
     - "3500"
   env_file:

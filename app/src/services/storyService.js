@@ -49,13 +49,10 @@ class StoryService {
         //if user is logged. this param is add by api-gateway
         if (data.loggedUser) {
             data.userId = data.loggedUser.id;
-            if(data.hideUser !== true) {
-                data.name = data.name ? data.name : data.loggedUser.fullName;
-                data.email = data.email ? data.email : data.loggedUser.email;
-            } else {
+            if(data.hideUser === true) {
                 logger.info('Hide User. Removing name and email');
                 data.name = '';
-                data.email = '';
+                data.email = '';                
             }
         }
 

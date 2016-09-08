@@ -64,7 +64,7 @@ class StoryService {
         if(data.loggedUser && data.loggedUser.email){
             let language = data.loggedUser.language.toLowerCase().replace(/_/g, '-');
             let template = `${config.get('mailStory.template')}-${language}`;
-            mailService.sendMail(config.get('mailStory.template'), {
+            mailService.sendMail(template, {
                 name: storyFormat.name,
                 story_url: config.get('mailStory.myStories')
             },[{

@@ -61,14 +61,14 @@ class StoryService {
         let storyFormat = StoryService.formatStory(story);
         yield new Story(storyFormat).save();
         logger.debug('Checking if email is defined to send email');
-        if(storyFormat.email){
+        if(data.loggedUser && data.loggedUser.email){
             let language = data.loggedUser.language.toLowerCase().replace(/_/g, '-');
             let template = `${config.get('mailStory.template')}-${language}`;
             mailService.sendMail(config.get('mailStory.template'), {
                 name: storyFormat.name,
                 story_url: config.get('mailStory.myStories')
             },[{
-                address: storyFormat.email
+                address: data.loggedUser.email
             }]);
 
         }

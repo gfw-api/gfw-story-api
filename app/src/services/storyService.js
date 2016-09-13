@@ -62,7 +62,26 @@ class StoryService {
         yield new Story(storyFormat).save();
         logger.debug('Checking if email is defined to send email');
         if(data.loggedUser && data.loggedUser.email){
-            let language = data.loggedUser.language.toLowerCase().replace(/_/g, '-');
+            let language = 'en';
+            if (data.loggedUser) {
+                logger.info('Obtaining user', '/user/' + data.loggedUser.id);
+                let result = yield require('vizz.microservice-client').requestToMicroservice({
+                    uri: '/user/' + data.loggedUser.id,
+                    method: 'GET',
+                    json: true
+                });
+                if(result.statusCode === 200){
+                    let user = yield deserializer(result.body);
+                    if (user.language) {
+                        logger.info('Setting user language to send email');
+                        language = user.language.toLowerCase().replace(/_/g, '-');
+                    }
+                } else {
+                    logger.error('error obtaining user', result.body);
+
+                }
+
+            }
             let template = `${config.get('mailStory.template')}-${language}`;
             mailService.sendMail(template, {
                 name: storyFormat.name,

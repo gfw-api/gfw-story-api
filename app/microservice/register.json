@@ -5,6 +5,7 @@
     "urls": [{
         "url": "/story",
         "method": "POST",
+        "binary": true,
         "authenticated": true,
         "endpoints": [{
             "method": "POST",

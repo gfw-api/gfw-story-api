@@ -6,6 +6,8 @@ prod:
     - prod.env
   command: start
   restart: always
-  log_driver: "gelf"
+  log_driver: "syslog"
   log_opt:
-    gelf-address: ${GELF_ADDRESS}
+    syslog-address: ${SYSLOG_ADDRESS}
+    tag: gfw-story-api${STAGING}
+

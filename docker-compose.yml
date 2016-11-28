@@ -1,11 +1,13 @@
 prod:
-  image: vizzuality/gfw-story-api:1.1.2${STAGING}
+  image: vizzuality/gfw-story-api:1.1.3${STAGING}
   ports:
     - "3500"
   env_file:
     - prod.env
   command: start
+  dns: ${DNS_SERVER}
   restart: always
-  log_driver: "gelf"
+  log_driver: "syslog"
   log_opt:
-    gelf-address: ${GELF_ADDRESS}
+    syslog-address: ${SYSLOG_ADDRESS}
+    tag: gfw-story-api${STAGING}

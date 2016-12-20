@@ -109,6 +109,7 @@ class StoryService {
             },[{
                 address: data.loggedUser.email
             }]);
+            logger.info('Email sended to user with template', template);
 
         }
         logger.info('sending email to WRI');

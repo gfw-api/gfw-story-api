@@ -8,9 +8,4 @@ test:
   environment:
     NODE_ENV: test
   command: test
-  links:
-    - mongo
-mongo:
-  extends:
-    file: base.yml
-    service: mongo
+

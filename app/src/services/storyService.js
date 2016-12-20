@@ -1,14 +1,15 @@
 'use strict';
 
-var logger = require('logger');
-var JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
-var cartoDBService = require('services/cartoDBService');
-var Story = require('models/story');
-var StorySerializer = require('serializers/storySerializer');
-var mailService = require('services/mailService');
-var config = require('config');
+const logger = require('logger');
+const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
+const cartoDBService = require('services/cartoDBService');
+const Story = require('models/story');
+const StorySerializer = require('serializers/storySerializer');
+const mailService = require('services/mailService');
+const config = require('config');
+const ctRegisterMicroservice = require('ct-register-microservice-node');
 
-var deserializer = function(obj){
+const deserializer = function(obj){
     return function(callback){
         new JSONAPIDeserializer({keyForAttribute: 'camelCase'}).deserialize(obj, callback);
     };
@@ -45,6 +46,25 @@ class StoryService {
         return newStory;
     }
 
+    static * updateStory(id, data){
+        if (data.loggedUser) {
+            data.userId = data.loggedUser.id;
+            if(data.hideUser === true) {
+                logger.info('Hide User. Removing name and email');
+                data.name = '';
+                data.email = '';
+            }
+        }
+        let story = yield cartoDBService.updateStory(id, data);
+        yield Story.where({
+          id: id,
+          userId: data.loggedUser.id
+        }).findOneAndRemove();
+        let storyFormat = StoryService.formatStory(story);
+        yield new Story(storyFormat).save();
+        return StorySerializer.serialize(storyFormat);
+    }
+
     static * createStory(data){
         //if user is logged. this param is add by api-gateway
         if (data.loggedUser) {
@@ -65,20 +85,20 @@ class StoryService {
             let language = 'en';
             if (data.loggedUser) {
                 logger.info('Obtaining user', '/user/' + data.loggedUser.id);
-                let result = yield require('vizz.microservice-client').requestToMicroservice({
-                    uri: '/user/' + data.loggedUser.id,
-                    method: 'GET',
-                    json: true
-                });
-                if(result.statusCode === 200){
-                    let user = yield deserializer(result.body);
+                try {
+                    let result = yield ctRegisterMicroservice.requestToMicroservice({
+                        uri: '/user/' + data.loggedUser.id,
+                        method: 'GET',
+                        json: true
+                    });
+                    
+                    let user = yield deserializer(result);
                     if (user.language) {
                         logger.info('Setting user language to send email');
                         language = user.language.toLowerCase().replace(/_/g, '-');
                     }
-                } else {
-                    logger.error('error obtaining user', result.body);
-
+                } catch(e) {
+                    logger.error('error obtaining user',e);
                 }
 
             }
@@ -108,17 +128,13 @@ class StoryService {
     static * getUser(id) {
         try{
             logger.debug('Doing request to /user');
-            let result = yield require('vizz.microservice-client').requestToMicroservice({
+            let result = yield ctRegisterMicroservice.requestToMicroservice({
                 uri:  '/user/' + id,
                 method: 'GET',
                 json: true
             });
-            if (result.statusCode !== 200) {
-                console.error('Error obtaining user:');
-                console.error(result);
-                return null;
-            }
-            return yield deserializer(result.body);
+            
+            return yield deserializer(result);
         }catch(e){
             logger.error(e);
             return null;
@@ -185,12 +201,12 @@ class StoryService {
         }
     }
 
-    static * getStories(fields){
+    static * getStories(filters){
         try {
-            let stories = yield cartoDBService.getStories();
+            let stories = yield cartoDBService.getStories(filters);
             stories = StoryService.formatStories(stories);
             yield StoryService.cacheAllStories(stories);
-            return StorySerializer.serialize(stories, fields);
+            return StorySerializer.serialize(stories, filters.fields);
         } catch (e) {
             logger.error(e);
             throw e;
@@ -214,9 +230,7 @@ class StoryService {
           userId: userId
         }).findOneAndRemove();
 
-        if (story) {
-          yield cartoDBService.deleteStoryById(id);
-        }
+        yield cartoDBService.deleteStoryById(id);
 
         return StorySerializer.serialize(story);
     }

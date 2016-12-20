@@ -80,7 +80,7 @@ class StoryService {
         logger.debug('Saving new story in cache', story);
         let storyFormat = StoryService.formatStory(story);
         yield new Story(storyFormat).save();
-        logger.debug('Checking if email is defined to send email', data.loggedUser);
+        logger.debug('Checking if email is defined to send email');
         if(data.loggedUser){
             let language = 'en';
             if (data.loggedUser) {
@@ -107,7 +107,7 @@ class StoryService {
                 name: storyFormat.name,
                 story_url: config.get('mailStory.myStories')
             },[{
-                address: data.loggedUser.email
+                address: user.email
             }]);
             logger.info('Email sended to user with template', template);
 

@@ -80,8 +80,8 @@ class StoryService {
         logger.debug('Saving new story in cache', story);
         let storyFormat = StoryService.formatStory(story);
         yield new Story(storyFormat).save();
-        logger.debug('Checking if email is defined to send email');
-        if(data.loggedUser && data.loggedUser.email){
+        logger.debug('Checking if email is defined to send email', data.loggedUser);
+        if(data.loggedUser){
             let language = 'en';
             if (data.loggedUser) {
                 logger.info('Obtaining user', '/user/' + data.loggedUser.id);

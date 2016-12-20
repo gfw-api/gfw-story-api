@@ -1,7 +1,7 @@
 {
     "logger": {
         "name": "gfw-story-api-STAGING",
-        "level": "info",
+        "level": "debug",
         "toFile": false,
         "dirLogFile": null
     },

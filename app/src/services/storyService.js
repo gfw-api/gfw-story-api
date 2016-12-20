@@ -83,6 +83,7 @@ class StoryService {
         logger.debug('Checking if email is defined to send email');
         if(data.loggedUser){
             let language = 'en';
+            let user = null;
             if (data.loggedUser) {
                 logger.info('Obtaining user', '/user/' + data.loggedUser.id);
                 try {
@@ -92,7 +93,7 @@ class StoryService {
                         json: true
                     });
                     
-                    let user = yield deserializer(result);
+                    user = yield deserializer(result);
                     if (user.language) {
                         logger.info('Setting user language to send email');
                         language = user.language.toLowerCase().replace(/_/g, '-');

@@ -14,6 +14,7 @@ develop:
     QUEUE_NAME: mail
     CT_URL: http://mymachine:9000
     LOCAL_URL: http://mymachine:3500
+    CT_TOKEN: <token>
     WRI_MAIL_RECIPIENTS: <emails>
   command: develop
   links:

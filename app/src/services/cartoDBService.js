@@ -161,7 +161,7 @@ class CartoDBService {
     * getStoriesByUser(user_id){
         logger.debug(user_id);
         let data = yield executeThunk(this.client, SELECT_SQL_BY_ID_OR_USERID, {table: config.get('cartoDB.table'), userId: user_id});
-        loger.debug(data);
+        logger.debug(data);
         if(data && data.rows && data.rows.length > 0){
             return data.rows;
         }

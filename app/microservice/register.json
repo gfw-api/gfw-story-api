@@ -22,6 +22,15 @@
         }]
     }, {
         "url": "/story/:id",
+        "method": "PUT",
+        "authenticated": true,
+        "endpoints": [{
+            "method": "PUT",
+            "baseUrl": "#(service.uri)",
+            "path": "/api/v1/story/:id"
+        }]
+    }, {
+        "url": "/story/:id",
         "method": "DELETE",
         "authenticated": true,
         "endpoints": [{

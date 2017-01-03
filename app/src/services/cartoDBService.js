@@ -8,10 +8,10 @@ const ctRegisterMicroservice = require('ct-register-microservice-node')
 ;
 Mustache.escapeHtml = function (text) { return text; };
 
-const SELECT_SQL = `SELECT 
-                ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id, hide_user 
-                FROM {{{table}}}  
-                WHERE visible=true 
+const SELECT_SQL = `SELECT
+                ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id, hide_user
+                FROM {{{table}}}
+                WHERE visible=true
                 {{#geojson}} AND ST_INTERSECTS(ST_SetSRID(ST_GeomFromGeoJSON('{{{geojson}}}'), 4326), the_geom) {{/geojson}}
                 {{#period}} AND date >= '{{period.begin}}'::date AND date <= '{{period.end}}'::date {{/period}}
                 ORDER BY date ASC`;
@@ -115,7 +115,7 @@ class CartoDBService {
         if (geostore.geojson) {
             return geostore.geojson.features[0].geometry;
         } else {
-            throw new Error('Geostore not found');  
+            throw new Error('Geostore not found');
         }
     }
 
@@ -126,7 +126,7 @@ class CartoDBService {
                 geojson = yield this.getGeojson(`/geostore/admin/${filters.iso}`);
             } else {
                 geojson = yield this.getGeojson(`/geostore/admin/${filters.iso}/${filters.id1}`);
-            }            
+            }
         } else if (filters.wdpaid) {
             geojson = yield this.getGeojson(`/geostore/wdpa/${filters.wdpaid}`);
         } else if (filters.use) {
@@ -159,7 +159,9 @@ class CartoDBService {
     }
 
     * getStoriesByUser(user_id){
+        logger.debug(user_id);
         let data = yield executeThunk(this.client, SELECT_SQL_BY_ID_OR_USERID, {table: config.get('cartoDB.table'), userId: user_id});
+        loger.debug(data);
         if(data && data.rows && data.rows.length > 0){
             return data.rows;
         }

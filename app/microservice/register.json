@@ -3,7 +3,7 @@
     "name": "#(service.name)",
     "tags": ["gfw"],
     "urls": [{
-        "url": "/story",
+        "url": "/v1/story",
         "method": "POST",
         "authenticated": true,
         "endpoints": [{
@@ -13,7 +13,7 @@
             "data": ["loggedUser"]
         }]
     }, {
-        "url": "/story/:id",
+        "url": "/v1/story/:id",
         "method": "GET",
         "endpoints": [{
             "method": "GET",
@@ -21,7 +21,7 @@
             "path": "/api/v1/story/:id"
         }]
     }, {
-        "url": "/story/:id",
+        "url": "/v1/story/:id",
         "method": "PUT",
         "authenticated": true,
         "endpoints": [{
@@ -30,7 +30,7 @@
             "path": "/api/v1/story/:id"
         }]
     }, {
-        "url": "/story/:id",
+        "url": "/v1/story/:id",
         "method": "DELETE",
         "authenticated": true,
         "endpoints": [{
@@ -39,7 +39,7 @@
             "path": "/api/v1/story/:id"
         }]
     }, {
-        "url": "/story/user/:user_id",
+        "url": "/v1/story/user/:user_id",
         "method": "GET",
         "endpoints": [{
             "method": "GET",
@@ -47,7 +47,7 @@
             "path": "/api/v1/story/user/:user_id"
         }]
     }, {
-        "url": "/story",
+        "url": "/v1/story",
         "method": "GET",
         "endpoints": [{
             "method": "GET",

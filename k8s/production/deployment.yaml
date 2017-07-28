@@ -49,6 +49,11 @@ spec:
                 secretKeyRef:
                   name: dbsecrets
                   key: REDIS_URI
+          - name: NEWRELIC_LICENSE
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: NEWRELIC_LICENSE
           - name: CT_URL
             valueFrom:
                 secretKeyRef:

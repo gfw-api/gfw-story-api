@@ -16,6 +16,7 @@ develop:
     LOCAL_URL: http://mymachine:3500
     CT_TOKEN: <token>
     WRI_MAIL_RECIPIENTS: <emails>
+    CT_REGISTER_MODE: auto
   command: develop
   links:
     - mongo

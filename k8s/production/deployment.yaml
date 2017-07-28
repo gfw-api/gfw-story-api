@@ -39,6 +39,11 @@ spec:
             value: mail_staging
           - name: WRI_MAIL_RECIPIENTS
             value: raul.requero@vizzuality.com,sergio.gordillo@vizzuality.com
+          - name: MONGO_URI
+            valueFrom:
+                secretKeyRef:
+                  name: dbsecrets
+                  key: STORY_MONGO_URI
           - name: QUEUE_URL
             valueFrom:
                 secretKeyRef:

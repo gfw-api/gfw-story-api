@@ -53,7 +53,7 @@ spec:
           - name: QUEUE_NAME
             value: mail_staging
           - name: WRI_MAIL_RECIPIENTS
-            value: raul.requero@vizzuality.com,sergio.gordillo@vizzuality.com
+            value: teresa.schofield@wri.org,alice.gottesman@wri.org,abarrett@wri.org
           - name: MONGO_URI
             valueFrom:
                 secretKeyRef:

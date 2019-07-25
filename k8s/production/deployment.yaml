@@ -36,7 +36,7 @@ spec:
           - name: QUEUE_PROVIDER
             value: redis
           - name: QUEUE_NAME
-            value: mail_staging
+            value: mail_prod
           - name: WRI_MAIL_RECIPIENTS
             value: teresa.schofield@wri.org,alice.gottesman@wri.org,abarrett@wri.org
           - name: MONGO_URI

@@ -1,6 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  namespace: gfw
   labels:
     name: {name}
     app: gfw
@@ -47,7 +48,7 @@ spec:
           - name: NODE_PATH
             value: app/src
           - name: LOCAL_URL
-            value: http://{name}.default.svc.cluster.local:3500
+            value: http://{name}.gfw.svc.cluster.local:3500
           - name: QUEUE_PROVIDER
             value: redis
           - name: QUEUE_NAME

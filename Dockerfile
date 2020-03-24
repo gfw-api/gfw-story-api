@@ -24,6 +24,9 @@ WORKDIR /opt/$NAME
 COPY ./app /opt/$NAME/app
 RUN chown -R $USER:$USER /opt/$NAME
 
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
+
 # Tell Docker we are going to use this ports
 EXPOSE 3500
 USER $USER

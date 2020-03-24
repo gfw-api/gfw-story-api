@@ -12,6 +12,7 @@ case "$1" in
         ;;
     test)
         echo "Running Test"
+        /wait
         exec grunt --gruntfile app/Gruntfile.js test
         ;;
     start)

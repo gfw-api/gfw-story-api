@@ -14,6 +14,7 @@ services:
       MONGO_PORT_27017_TCP_ADDR: mongo
       QUEUE_URL: redis://redis:6379
       CT_URL: http://mymachine:9000
+      WAIT_HOSTS: redis:6379, mongo:27017
     command: test
     depends_on:
       - mongo

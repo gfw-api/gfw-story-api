@@ -1,39 +1,18 @@
-'use strict';
-
-module.exports = function (grunt) {
+module.exports = (grunt) => {
 
     grunt.file.setBase('..');
+    // eslint-disable-next-line import/no-extraneous-dependencies
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
 
 
         clean: {},
-        jshint: {
-            js: {
-                src: [
-                    'app/src/**/*.js'
-                ],
-                options: {
-                    jshintrc: true
-                },
-                globals: {}
-            },
-            jsTest: {
-                src: [
-                    'app/test/**/*.js'
-                ],
-                options: {
-                    jshintrc: true
-                },
-                globals: {}
-            }
-        },
         express: {
             dev: {
                 options: {
                     script: 'app/index.js',
-                    'node_env': 'dev',
+                    node_env: 'dev',
                     port: process.env.PORT,
                     output: 'started'
                 }
@@ -92,18 +71,34 @@ module.exports = function (grunt) {
                 }
             },
 
+        },
+
+        nyc: {
+            cover: {
+                options: {
+                    include: ['app/src/**'],
+                    exclude: '*.test.*',
+                    reporter: ['lcov', 'text-summary'],
+                    reportDir: 'coverage',
+                    all: true
+                },
+                cmd: false,
+                args: ['grunt', '--gruntfile', 'app/Gruntfile.js', 'mochaTest:e2e']
+            }
         }
     });
 
 
     grunt.registerTask('unitTest', ['mochaTest:unit']);
 
-    grunt.registerTask('e2eTest', ['express:dev', 'mochaTest:e2e']);
+    grunt.registerTask('e2eTest', ['mochaTest:e2e']);
 
-    grunt.registerTask('test', ['jshint', 'unitTest']);
+    grunt.registerTask('test', ['e2eTest', 'unitTest']);
 
     grunt.registerTask('serve', ['express:dev', 'watch']);
 
     grunt.registerTask('default', 'serve');
+
+    grunt.loadNpmTasks('grunt-simple-nyc');
 
 };

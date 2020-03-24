@@ -1,23 +1,25 @@
 {
-    "apiGateway": {
-        "uri": "API_GATEWAY_URI",
-        "queueUrl": "QUEUE_URL",
-        "queueProvider": "QUEUE_PROVIDER",
-        "queueName": "QUEUE_NAME"
-    },
-    "mongodb": {
-        "host": "MONGO_PORT_27017_TCP_ADDR",
-        "port": "MONGO_PORT_27017_TCP_PORT"
-    },
-    "cartoDB": {
-        "apiKey": "CARTODB_APIKEY",
-        "user": "CARTODB_USER"
-    },
-    "service": {
-        "port": "PORT",
-        "uri": "URI"
-    },
-    "wriMailStory":{
-        "recipients" : "WRI_MAIL_RECIPIENTS"
-    }
+  "apiGateway": {
+    "uri": "API_GATEWAY_URI",
+    "queueUrl": "QUEUE_URL",
+    "queueName": "QUEUE_NAME"
+  },
+  "mongodb": {
+    "host": "MONGO_PORT_27017_TCP_ADDR",
+    "port": "MONGO_PORT_27017_TCP_PORT"
+  },
+  "cartoDB": {
+    "apiKey": "CARTODB_APIKEY",
+    "user": "CARTODB_USER"
+  },
+  "service": {
+    "port": "PORT",
+    "uri": "URI"
+  },
+  "wriMailStory": {
+    "recipients": "WRI_MAIL_RECIPIENTS"
+  },
+  "logger": {
+    "level": "LOGGER_LEVEL"
+  }
 }

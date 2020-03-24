@@ -1,11 +1,33 @@
-test:
-  extends:
-    file: base.yml
-    service: base
-  ports:
-    - "3500"
-  container_name: gfw-story-api-test
-  environment:
-    NODE_ENV: test
-  command: test
+version: "3"
+services:
+  test:
+    build: .
+    ports:
+      - "3500"
+    container_name: gfw-story-api-test
+    environment:
+      PORT: 3500
+      NODE_PATH: app/src
+      NODE_ENV: test
+      API_VERSION: v1
+      CT_REGISTER_MODE: auto
+      MONGO_PORT_27017_TCP_ADDR: mongo
+      QUEUE_URL: redis://redis:6379
+      CT_URL: http://mymachine:9000
+    command: test
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:3.4
+    command: --smallfiles
+    ports:
+      - "27017"
+
+  redis:
+    image: redis:5.0.8-alpine3.11
+    container_name: redis-test
+    ports:
+      - "6379"
 

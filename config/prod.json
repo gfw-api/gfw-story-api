@@ -1,20 +1,20 @@
 {
-    "logger": {
-        "name": "gfw-story-api",
-        "level": "warn",
-        "toFile": false,
-        "dirLogFile": null
-    },
-    "cartoDB":{
-        "table": "gfw_stories_prod"
-    },
-    "mailStory":{
-        "template":"new-story",
-        "urlDetail": "http://www.globalforestwatch.org/stories/",
-        "myStories": "http://www.globalforestwatch.org/my_gfw/stories"
-    },
-    "wriMailStory": {
-        "template": "new-story-wri",
-        "recipients": ""
-    }
+  "logger": {
+    "name": "gfw-story-api",
+    "level": "warn",
+    "toFile": false,
+    "dirLogFile": null
+  },
+  "cartoDB": {
+    "table": "gfw_stories_prod"
+  },
+  "mailStory": {
+    "template": "new-story",
+    "urlDetail": "http://www.globalforestwatch.org/stories/",
+    "myStories": "http://www.globalforestwatch.org/my_gfw/stories"
+  },
+  "wriMailStory": {
+    "template": "new-story-wri",
+    "recipients": ""
+  }
 }

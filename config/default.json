@@ -1,37 +1,36 @@
 {
-    "logger": {
-        "name": "gfw-story-api-DEV",
-        "level": "debug",
-        "toFile": false,
-        "dirLogFile": null
-    },
-    "service": {
-        "id": "gfw-story-api_1.0.0",
-        "name": "GFW Story API",
-        "uri": "http://192.168.99.100:3500",
-        "port": 3500
-    },
-    "apiGateway":{
-        "uri": "http://192.168.99.100:8000/gateway/service"
-    },
-    "cartoDB":{
-        "apiKey": null,
-        "user": null,
-        "table": "gfw_stories_staging"
-    },
-    "mongodb":{
-        "database": "gfw_story_db",
-        "host": "192.168.99.100",
-        "port": 32780
-    },
-    "mailStory":{
-        "template":"new-story",
-        "urlDetail": "http://www.globalforestwatch.org/stories/",
-        "myStories": "http://www.globalforestwatch.org/my_gfw/stories"
-    },
-    "wriMailStory": {
-        "template": "new-story-wri",
-        "recipients": ""
-    }
-
+  "logger": {
+    "name": "gfw-story-api-DEV",
+    "level": "debug",
+    "toFile": false,
+    "dirLogFile": null
+  },
+  "service": {
+    "id": "gfw-story-api_1.0.0",
+    "name": "GFW Story API",
+    "uri": "http://192.168.99.100:3500",
+    "port": 3500
+  },
+  "apiGateway": {
+    "uri": "http://192.168.99.100:8000/gateway/service"
+  },
+  "cartoDB": {
+    "apiKey": null,
+    "user": null,
+    "table": "gfw_stories_staging"
+  },
+  "mongodb":{
+    "database": "gfw_story_db",
+    "host": "mymachine",
+    "port": 27017
+  },
+  "mailStory": {
+    "template": "new-story",
+    "urlDetail": "http://www.globalforestwatch.org/stories/",
+    "myStories": "http://www.globalforestwatch.org/my_gfw/stories"
+  },
+  "wriMailStory": {
+    "template": "new-story-wri",
+    "recipients": ""
+  }
 }

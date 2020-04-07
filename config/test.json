@@ -1,8 +1,13 @@
 {
-    "logger": {
-        "name": "gfw-story-api-TEST",
-        "level": "debug",
-        "toFile": false,
-        "dirLogFile": null
-    }
+  "logger": {
+    "name": "gfw-story-api-TEST",
+    "level": "debug",
+    "toFile": false,
+    "dirLogFile": null
+  },
+  "apiGateway": {
+    "uri": "API_GATEWAY_URI",
+    "queueUrl": "QUEUE_URL",
+    "queueName": "QUEUE_NAME"
+  }
 }

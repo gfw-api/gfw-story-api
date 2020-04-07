@@ -3,8 +3,8 @@ kind: Deployment
 metadata:
   namespace: gfw
   labels:
-    name: {name}
-  name: {name}
+    name: story
+  name: story
 spec:
   revisionHistoryLimit: 0
   template:
@@ -12,16 +12,19 @@ spec:
       annotations:
         chaos.alpha.kubernetes.io/enabled: "true"
       labels:
-        name: {name}
+        name: story
     spec:
       containers:
-      - name: {name}
-        image: vizzuality/{name}
+      - name: story
+        image: vizzuality/story
         imagePullPolicy: Always
         resources:
           requests:
-            memory: "0Mi"
-            cpu: "0m"
+            cpu: "0.5"
+            memory: "256M"
+          limits:
+            cpu: "1"
+            memory: "512M"
         args:
           - start
         env:
@@ -32,9 +35,7 @@ spec:
           - name: NODE_PATH
             value: app/src
           - name: LOCAL_URL
-            value: http://{name}.gfw.svc.cluster.local:3500
-          - name: QUEUE_PROVIDER
-            value: redis
+            value: http://story.gfw.svc.cluster.local:3500
           - name: QUEUE_NAME
             value: mail_staging
           - name: WRI_MAIL_RECIPIENTS
@@ -44,11 +45,6 @@ spec:
                 secretKeyRef:
                   name: dbsecrets
                   key: STORY_MONGO_URI
-          - name: NEWRELIC_LICENSE
-            valueFrom:
-                secretKeyRef:
-                  name: mssecrets
-                  key: NEWRELIC_LICENSE
           - name: QUEUE_URL
             valueFrom:
                 secretKeyRef:
@@ -86,5 +82,22 @@ spec:
                   key: CARTODB_APIKEY
         ports:
           - containerPort: 3500
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /healthcheck
+            port: 3500
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /healthcheck
+            port: 3500
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          periodSeconds: 15
 
       restartPolicy: Always

@@ -1,4 +1,7 @@
 node_modules/
-.DS_STORE
-npm-debug.log
-newrelic_agent.log
+.env
+/.vscode
+npm-debug.*
+coverage
+.nyc_output
+/dev.env

@@ -1,21 +1,21 @@
 {
-    "logger": {
-        "name": "gfw-story-api-STAGING",
-        "level": "info",
-        "toFile": false,
-        "dirLogFile": null
-    },
-    "service": {
-        "uri": "http://gfw-story-api-staging.herokuapp.com",
-        "port": null
-    },
-    "mailStory":{
-        "template":"new-story",
-        "urlDetail": "http://staging.globalforestwatch.org/stories/",
-        "myStories": "http://staging.globalforestwatch.org/my_gfw/stories"
-    },
-    "wriMailStory": {
-        "template": "new-story-wri",
-        "recipients": ""
-    }
+  "logger": {
+    "name": "gfw-story-api-STAGING",
+    "level": "info",
+    "toFile": false,
+    "dirLogFile": null
+  },
+  "service": {
+    "uri": "http://gfw-story-api-staging.herokuapp.com",
+    "port": null
+  },
+  "mailStory": {
+    "template": "new-story",
+    "urlDetail": "http://staging.globalforestwatch.org/stories/",
+    "myStories": "http://staging.globalforestwatch.org/my_gfw/stories"
+  },
+  "wriMailStory": {
+    "template": "new-story-wri",
+    "recipients": ""
+  }
 }

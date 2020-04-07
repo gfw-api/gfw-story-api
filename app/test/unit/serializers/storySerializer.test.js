@@ -1,11 +1,10 @@
-'use strict';
-var logger = require('logger');
-var should = require('should');
-var assert = require('assert');
-var StorySerializer = require('serializers/storySerializer');
+const chai = require('chai');
+const StorySerializer = require('serializers/storySerializer');
 
-describe('Story serializer test', function() {
-    var story = {
+chai.should();
+
+describe('Story serializer test', () => {
+    const story = {
         name: 'pruebaRA',
         title: 'titulo',
         createdAt: '2016-04-12T15:41:38.000Z',
@@ -34,16 +33,11 @@ describe('Story serializer test', function() {
         lng: -3.70132373942569
     };
 
-
-    before(function*() {
-
-    });
-
-    it('Generate correct jsonapi response of the story', function() {
-        let response = StorySerializer.serialize(story);
-        response.should.not.be.a.Array();
+    it('Generate correct jsonapi response of the story', () => {
+        const response = StorySerializer.serialize(story);
+        response.should.not.be.an('array');
         response.should.have.property('data');
-        let data = response.data;
+        const { data } = response;
         data.should.have.property('type');
         data.should.have.property('attributes');
         data.should.have.property('id');
@@ -73,8 +67,4 @@ describe('Story serializer test', function() {
 
     });
 
-
-    after(function*() {
-
-    });
 });

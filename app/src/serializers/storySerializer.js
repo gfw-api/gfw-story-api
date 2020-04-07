@@ -1,11 +1,9 @@
-'use strict';
+const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 
-var logger = require('logger');
-var JSONAPISerializer = require('jsonapi-serializer').Serializer;
 const ALL_ATTRIBUTES = ['name', 'title', 'createdAt', 'created_at', 'updatedAt', 'updated_at', 'visible', 'details', 'date', 'email', 'location', 'media', 'lat', 'lng', 'hideUser'];
-var storySerializer = new JSONAPISerializer('story', {
+const storySerializer = new JSONAPISerializer('story', {
     attributes: ALL_ATTRIBUTES,
-    typeForAttribute: function(attribute, record) {
+    typeForAttribute(attribute) {
         return attribute;
     },
     media: {
@@ -25,6 +23,7 @@ class StorySerializer {
 
         return storySerializer.serialize(data);
     }
+
 }
 
 module.exports = StorySerializer;

@@ -12,6 +12,20 @@ spec:
       labels:
         name: story
     spec:
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "gfw"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - gfw
       containers:
       - name: story
         image: vizzuality/story

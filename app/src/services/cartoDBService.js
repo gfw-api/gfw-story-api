@@ -7,16 +7,16 @@ const ctRegisterMicroservice = require('ct-register-microservice-node');
 
 Mustache.escapeHtml = (text) => text;
 
-const SELECT_SQL = `SELECT 
-                ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id, hide_user 
-                FROM {{{table}}}  
-                WHERE visible=true 
+const SELECT_SQL = `SELECT
+                ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id, hide_user
+                FROM {{{table}}}
+                WHERE visible=true
                 {{#geojson}} AND ST_INTERSECTS(ST_SetSRID(ST_GeomFromGeoJSON('{{{geojson}}}'), 4326), the_geom) {{/geojson}}
                 {{#period}} AND date >= '{{period.begin}}'::date AND date <= '{{period.end}}'::date {{/period}}
                 ORDER BY date ASC`;
-const SELECT_SQL_BY_ID_OR_USERID = `SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, 
-                details, email, created_at, name, title, visible, date, location, cartodb_id as id, 
-                media, user_id, hide_user FROM {{{table}}}  {{#id}} 
+const SELECT_SQL_BY_ID_OR_USERID = `SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng,
+                details, email, created_at, name, title, visible, date, location, cartodb_id as id,
+                media, user_id, hide_user FROM {{{table}}}  {{#id}}
                 WHERE cartodb_id = {{{id}}} {{/id}} {{#userId}} WHERE user_id = '{{{userId}}}' {{/userId}} ORDER BY date ASC`;
 
 const DELETE_SQL = 'DELETE FROM {{{table}}} WHERE cartodb_id = {{{id}}}';
@@ -32,9 +32,9 @@ const INSERT_SQL = `
       email, created_at, name, title, visible, date, location, cartodb_id
       as id, media, user_id, hide_user`;
 const UPDATE_SQL = `
-    UPDATE {{{table}}} 
+    UPDATE {{{table}}}
     SET name = {{{name}}}, details = {{{details}}}, title = {{{title}}}, visible = {{{visible}}}, location = {{{location}}},
-                 email = {{{email}}}, date = {{{date}}}, media =  {{{media}}}, 
+                 email = {{{email}}}, date = {{{date}}}, media =  {{{media}}},
                  the_geom = ST_SetSRID(ST_GeomFromGeoJSON({{{theGeom}}}), 4326), hide_user = {{{hideUser}}} WHERE cartodb_id = {{cartodbId}} and user_id = {{{userId}}}
     RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,
       email, created_at, name, title, visible, date, location, cartodb_id

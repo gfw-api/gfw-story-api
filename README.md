@@ -1,6 +1,6 @@
 # GFW Story API
 
-[![Build Status](https://travis-ci.org/gfw-api/gfw-story-api.svg?branch=develop)](https://travis-ci.org/gfw-api/gfw-story-api)
+[![Build Status](https://travis-ci.com/gfw-api/gfw-story-api.svg?branch=dev)](https://travis-ci.com/gfw-api/gfw-story-api)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/719013c600d29a695000/test_coverage)](https://codeclimate.com/github/gfw-api/gfw-story-api/test_coverage)
 
 This repository is the microservice that it implement the story functionality and exposed the /story endpoint in the api-gateway

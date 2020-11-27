@@ -40,14 +40,14 @@ const UPDATE_SQL = `
       email, created_at, name, title, visible, date, location, cartodb_id
       as id, media, user_id, hide_user`;
 
-const executeThunk = (client, sql, params) => (callback) => {
+const executeThunk = async (client, sql, params) => (new Promise((resolve, reject) => {
     logger.debug(Mustache.render(sql, params));
     client.execute(sql, params).done((data) => {
-        callback(null, data);
-    }).error((err) => {
-        callback(err, null);
+        resolve(data);
+    }).error((error) => {
+        reject(error);
     });
-};
+}));
 
 const deserializer = (obj) => (callback) => {
     new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(obj, callback);
@@ -63,7 +63,7 @@ class CartoDBService {
         this.client = new CartoDB.SQL({ user: config.get('cartoDB.user'), api_key: config.get('cartoDB.apiKey') });
     }
 
-    * createStory(story) {
+    async createStory(story) {
         const params = {
             name: story.name ? wrapQuotes(story.name, true) : 'null',
             details: story.details ? wrapQuotes(story.details, true) : 'null',
@@ -79,12 +79,12 @@ class CartoDBService {
             table: config.get('cartoDB.table')
         };
 
-        const data = yield executeThunk(this.client, INSERT_SQL, params);
+        const data = await executeThunk(this.client, INSERT_SQL, params);
 
         return data.rows[0];
     }
 
-    * updateStory(id, story) {
+    async updateStory(id, story) {
         const params = {
             name: story.name ? wrapQuotes(story.name, true) : 'null',
             details: story.details ? wrapQuotes(story.details, true) : 'null',
@@ -101,19 +101,19 @@ class CartoDBService {
             table: config.get('cartoDB.table')
         };
 
-        const data = yield executeThunk(this.client, UPDATE_SQL, params);
+        const data = await executeThunk(this.client, UPDATE_SQL, params);
 
         return data.rows[0];
     }
 
     // eslint-disable-next-line class-methods-use-this
-    * getGeojson(path) {
-        const result = yield ctRegisterMicroservice.requestToMicroservice({
+    async getGeojson(path) {
+        const result = await ctRegisterMicroservice.requestToMicroservice({
             uri: path,
             method: 'GET',
             json: true
         });
-        const geostore = yield deserializer(result);
+        const geostore = await deserializer(result);
         if (geostore.geojson) {
             return geostore.geojson.features[0].geometry;
         }
@@ -121,20 +121,20 @@ class CartoDBService {
 
     }
 
-    * getStories(filters) {
+    async getStories(filters) {
         let geojson = null;
         if (filters.iso) {
             if (!filters.id1) {
-                geojson = yield this.getGeojson(`/geostore/admin/${filters.iso}`);
+                geojson = await this.getGeojson(`/geostore/admin/${filters.iso}`);
             } else {
-                geojson = yield this.getGeojson(`/geostore/admin/${filters.iso}/${filters.id1}`);
+                geojson = await this.getGeojson(`/geostore/admin/${filters.iso}/${filters.id1}`);
             }
         } else if (filters.wdpaid) {
-            geojson = yield this.getGeojson(`/geostore/wdpa/${filters.wdpaid}`);
+            geojson = await this.getGeojson(`/geostore/wdpa/${filters.wdpaid}`);
         } else if (filters.use) {
-            geojson = yield this.getGeojson(`/geostore/use/${filters.use}/${filters.useid}`);
+            geojson = await this.getGeojson(`/geostore/use/${filters.use}/${filters.useid}`);
         } else if (filters.geostore) {
-            geojson = yield this.getGeojson(`/geostore/${filters.geostore}`);
+            geojson = await this.getGeojson(`/geostore/${filters.geostore}`);
         }
         if (geojson) {
             geojson = JSON.stringify(geojson);
@@ -148,7 +148,7 @@ class CartoDBService {
             };
         }
 
-        const data = yield executeThunk(this.client, SELECT_SQL, {
+        const data = await executeThunk(this.client, SELECT_SQL, {
             table: config.get('cartoDB.table'),
             geojson,
             period
@@ -156,8 +156,8 @@ class CartoDBService {
         return data.rows;
     }
 
-    * getStoryById(id) {
-        const data = yield executeThunk(this.client, SELECT_SQL_BY_ID_OR_USERID, {
+    async getStoryById(id) {
+        const data = await executeThunk(this.client, SELECT_SQL_BY_ID_OR_USERID, {
             table: config.get('cartoDB.table'),
             id
         });
@@ -167,8 +167,8 @@ class CartoDBService {
         return null;
     }
 
-    * getStoriesByUser(userId) {
-        const data = yield executeThunk(this.client, SELECT_SQL_BY_ID_OR_USERID, {
+    async getStoriesByUser(userId) {
+        const data = await executeThunk(this.client, SELECT_SQL_BY_ID_OR_USERID, {
             table: config.get('cartoDB.table'),
             userId
         });
@@ -178,8 +178,8 @@ class CartoDBService {
         return null;
     }
 
-    * deleteStoryById(id) {
-        const data = yield executeThunk(this.client, DELETE_SQL, { table: config.get('cartoDB.table'), id });
+    async deleteStoryById(id) {
+        const data = await executeThunk(this.client, DELETE_SQL, { table: config.get('cartoDB.table'), id });
         if (data && data.rows && data.rows.length > 0) {
             return data.rows;
         }

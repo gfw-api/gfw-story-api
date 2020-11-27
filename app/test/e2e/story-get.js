@@ -26,7 +26,8 @@ describe('Get stories', () => {
             .get('/api/v2/sql')
             .query({
                 q: 'SELECT%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ST_Y%28the_geom%29%20AS%20lat%2C%20ST_X%28the_geom%29%20AS%20lng%2C%20details%2C%20email%2C%20created_at%2C%20name%2C%20title%2C%20visible%2C%20date%2C%20location%2C%20cartodb_id%20as%20id%2C%20media%2C%20user_id%2C%20hide_user%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20FROM%20gfw_stories_staging%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20WHERE%20visible%3Dtrue%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ORDER%20BY%20date%20ASC',
-                api_key: config.get('cartoDB.apiKey')
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
             })
             .reply(200, {
                 rows: [{

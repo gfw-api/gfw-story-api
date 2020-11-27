@@ -1,15 +1,14 @@
 const config = require('config');
 const logger = require('logger');
-const koa = require('koa');
+const Koa = require('koa');
 const koaQs = require('koa-qs');
-const bodyParser = require('koa-bodyparser');
+const koaBody = require('koa-body');
 const koaLogger = require('koa-logger');
 const loader = require('loader');
 const sleep = require('sleep');
-const validate = require('koa-validate');
+const koaValidate = require('koa-validate');
 const mongoose = require('mongoose');
 const ErrorSerializer = require('serializers/errorSerializer');
-const convert = require('koa-convert');
 const koaSimpleHealthCheck = require('koa-simple-healthcheck');
 const ctRegisterMicroservice = require('ct-register-microservice-node');
 
@@ -36,7 +35,7 @@ async function init() {
             }
 
             // instance of koa
-            const app = koa();
+            const app = new Koa();
 
             // if environment is dev then load koa-logger
             if (process.env.NODE_ENV === 'dev') {
@@ -44,16 +43,19 @@ async function init() {
             }
 
             koaQs(app, 'extended');
-            app.use(bodyParser({
-                jsonLimit: '50mb'
+            app.use(koaBody({
+                multipart: true,
+                jsonLimit: '50mb',
+                formLimit: '50mb',
+                textLimit: '50mb'
             }));
 
-            app.use(convert.back(koaSimpleHealthCheck()));
+            app.use(koaSimpleHealthCheck());
 
             // catch errors and send in jsonapi standard. Always return vnd.api+json
-            app.use(function* handleErrors(next) {
+            app.use(async (ctx, next) => {
                 try {
-                    yield next;
+                    await next();
                 } catch (inErr) {
                     let error = inErr;
                     try {
@@ -62,36 +64,30 @@ async function init() {
                         logger.debug('Could not parse error message - is it JSON?: ', inErr);
                         error = inErr;
                     }
-                    this.status = error.status || this.status || 500;
-                    if (this.status >= 500) {
+                    ctx.status = error.status || ctx.status || 500;
+                    if (ctx.status >= 500) {
                         logger.error(error);
                     } else {
                         logger.info(error);
                     }
 
-                    this.body = ErrorSerializer.serializeError(this.status, error.message);
-                    if (process.env.NODE_ENV === 'prod' && this.status === 500) {
-                        this.body = 'Unexpected error';
+                    ctx.body = ErrorSerializer.serializeError(ctx.status, error.message);
+                    if (process.env.NODE_ENV === 'prod' && ctx.status === 500) {
+                        ctx.body = 'Unexpected error';
                     }
+                    ctx.response.type = 'application/vnd.api+json';
                 }
-                this.response.type = 'application/vnd.api+json';
             });
 
             // load custom validator
-            app.use(validate());
+            koaValidate(app);
 
             // load routes
             loader.loadRoutes(app);
 
-            // Instance of http module
-            const server = require('http').Server(app.callback());
-
-            // get port of environment, if not exist obtain of the config.
-            // In production environment, the port must be declared in environment variable
             const port = process.env.PORT || config.get('service.port');
 
-            server.listen(port, () => {
-
+            const server = app.listen(port, () => {
                 ctRegisterMicroservice.register({
                     info: require('../microservice/register.json'),
                     swagger: require('../microservice/public-swagger.json'),

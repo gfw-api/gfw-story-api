@@ -7,9 +7,7 @@ const mailService = require('services/mailService');
 const config = require('config');
 const ctRegisterMicroservice = require('ct-register-microservice-node');
 
-const deserializer = (obj) => (callback) => {
-    new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(obj, callback);
-};
+const deserializer = async (obj) => new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(obj);
 
 class StoryService {
 
@@ -42,7 +40,7 @@ class StoryService {
         return newStory;
     }
 
-    static* updateStory(id, data) {
+    static async updateStory(id, data) {
         if (data.loggedUser) {
             data.userId = data.loggedUser.id;
             if (data.hideUser === true) {
@@ -51,17 +49,17 @@ class StoryService {
                 data.email = '';
             }
         }
-        const story = yield cartoDBService.updateStory(id, data);
-        yield Story.where({
+        const story = await cartoDBService.updateStory(id, data);
+        await Story.where({
             id,
             userId: data.loggedUser.id
         }).findOneAndRemove();
         const storyFormat = StoryService.formatStory(story);
-        yield new Story(storyFormat).save();
+        await new Story(storyFormat).save();
         return StorySerializer.serialize(storyFormat);
     }
 
-    static* createStory(data) {
+    static async createStory(data) {
         // if user is logged. this param is add by api-gateway
         if (data.loggedUser) {
             data.userId = data.loggedUser.id;
@@ -72,10 +70,10 @@ class StoryService {
             }
         }
 
-        const story = yield cartoDBService.createStory(data);
+        const story = await cartoDBService.createStory(data);
         logger.debug('Saving new story in cache', story);
         const storyFormat = StoryService.formatStory(story);
-        yield new Story(storyFormat).save();
+        await new Story(storyFormat).save();
         logger.debug('Checking if email is defined to send email');
         if (data.loggedUser) {
             let language = 'en';
@@ -83,13 +81,13 @@ class StoryService {
             if (data.loggedUser) {
                 logger.info('Obtaining user', `/user/${data.loggedUser.id}`);
                 try {
-                    const result = yield ctRegisterMicroservice.requestToMicroservice({
+                    const result = await ctRegisterMicroservice.requestToMicroservice({
                         uri: `/user/${data.loggedUser.id}`,
                         method: 'GET',
                         json: true
                     });
 
-                    user = yield deserializer(result);
+                    user = await deserializer(result);
                     if (user.language) {
                         logger.info('Setting user language to send email');
                         language = user.language.toLowerCase().replace(/_/g, '-');
@@ -121,34 +119,34 @@ class StoryService {
         return StorySerializer.serialize(storyFormat);
     }
 
-    static* getUser(id) {
+    static async getUser(id) {
         try {
             logger.debug('Doing request to /user');
-            const result = yield ctRegisterMicroservice.requestToMicroservice({
+            const result = await ctRegisterMicroservice.requestToMicroservice({
                 uri: `/user/${id}`,
                 method: 'GET',
                 json: true
             });
 
-            return yield deserializer(result);
+            return await deserializer(result);
         } catch (e) {
             logger.error(e);
             return null;
         }
     }
 
-    static* getStoryById(id, fields) {
+    static async getStoryById(id, fields) {
         logger.debug('Searching in cache');
-        let story = yield Story.findOne({ id });
+        let story = await Story.findOne({ id });
 
         if (!story) {
             logger.debug('Not find in cache. Obtaining of cartodb');
-            story = yield cartoDBService.getStoryById(id);
+            story = await cartoDBService.getStoryById(id);
             if (!story) {
                 return null;
             }
             story = StoryService.formatStory(story);
-            story = yield new Story(story).save();
+            story = await new Story(story).save();
 
         } else {
             logger.debug('Found in cache. Returning');
@@ -169,20 +167,20 @@ class StoryService {
         return newStories;
     }
 
-    static* cacheAllStories(stories) {
+    static async cacheAllStories(stories) {
         logger.debug('Removing cache');
-        yield Story.remove({});
+        await Story.remove({});
         logger.debug('Populating cache');
         for (let i = 0, { length } = stories; i < length; i++) {
-            yield new Story(stories[i]).save();
+            await new Story(stories[i]).save();
         }
     }
 
-    static* getStories(filters) {
+    static async getStories(filters) {
         try {
-            let stories = yield cartoDBService.getStories(filters);
+            let stories = await cartoDBService.getStories(filters);
             stories = StoryService.formatStories(stories);
-            yield StoryService.cacheAllStories(stories);
+            await StoryService.cacheAllStories(stories);
             return StorySerializer.serialize(stories, filters.fields);
         } catch (e) {
             logger.error(e);
@@ -190,9 +188,9 @@ class StoryService {
         }
     }
 
-    static* getStoriesByUser(userId, fields) {
+    static async getStoriesByUser(userId, fields) {
         try {
-            let stories = yield cartoDBService.getStoriesByUser(userId);
+            let stories = await cartoDBService.getStoriesByUser(userId);
             stories = StoryService.formatStories(stories);
             return StorySerializer.serialize(stories, fields);
         } catch (e) {
@@ -201,13 +199,13 @@ class StoryService {
         }
     }
 
-    static* deleteStoryById(id, userId) {
-        const story = yield Story.where({
+    static async deleteStoryById(id, userId) {
+        const story = await Story.where({
             id,
             userId
         }).findOneAndRemove();
 
-        yield cartoDBService.deleteStoryById(id);
+        await cartoDBService.deleteStoryById(id);
 
         return StorySerializer.serialize(story);
     }

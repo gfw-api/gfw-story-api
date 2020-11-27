@@ -22,8 +22,13 @@ describe('Create story', () => {
     });
 
     it('Create story (happy case)', async () => {
+
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
-            .post('/api/v2/sql', `q=%0A%20%20%20%20INSERT%20INTO%20gfw_stories_staging%20%28%0A%20%20%20%20%20%20name%2C%20details%2C%20title%2C%20visible%2C%20location%2C%20email%2C%20date%2C%20user_id%2C%0A%20%20%20%20%20%20media%2C%20the_geom%2C%20hide_user%0A%20%20%20%20%29%20VALUES%20%28%0A%20%20%20%20%20%20null%2C%20null%2C%20null%2C%20false%2C%0A%20%20%20%20%20%20null%2C%20null%2C%20null%2C%20null%2C%0A%20%20%20%20%20%20null%2C%20ST_SetSRID%28ST_GeomFromGeoJSON%28%27undefined%27%29%2C%204326%29%2C%20false%0A%20%20%20%20%29%20RETURNING%20ST_Y%28the_geom%29%20AS%20lat%2C%20ST_X%28the_geom%29%20AS%20lng%2C%20details%2C%0A%20%20%20%20%20%20email%2C%20created_at%2C%20name%2C%20title%2C%20visible%2C%20date%2C%20location%2C%20cartodb_id%0A%20%20%20%20%20%20as%20id%2C%20media%2C%20user_id%2C%20hide_user&api_key=${config.get('cartoDB.apiKey')}`)
+            .post('/api/v2/sql', {
+                q: '\n    INSERT INTO gfw_stories_staging (\n      name, details, title, visible, location, email, date, user_id,\n      media, the_geom, hide_user\n    ) VALUES (\n      null, null, null, false,\n      null, null, null, null,\n      null, ST_SetSRID(ST_GeomFromGeoJSON(\'undefined\'), 4326), false\n    ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,\n      email, created_at, name, title, visible, date, location, cartodb_id\n      as id, media, user_id, hide_user',
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
             .reply(200, {
                 rows: [{
                     lat: 20.12345,

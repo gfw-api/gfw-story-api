@@ -9,10 +9,10 @@ const router = new Router({
 
 class StoryRouter {
 
-    static* createStory() {
-        logger.info('Creating story with body', this.request.body);
+    static async createStory(ctx) {
+        logger.info('Creating story with body', ctx.request.body);
         try {
-            this.body = yield StoryService.createStory(this.request.body);
+            ctx.body = await StoryService.createStory(ctx.request.body);
 
         } catch (err) {
             logger.error(err);
@@ -20,61 +20,61 @@ class StoryRouter {
         }
     }
 
-    static* getStories() {
+    static async getStories(ctx) {
         logger.info('Obtaining stories');
-        this.body = yield StoryService.getStories(this.query);
+        ctx.body = await StoryService.getStories(ctx.request.query);
     }
 
-    static* getStoriesByUser() {
-        logger.info('Obtaining stories for user with ID', this.params.user_id);
-        this.body = yield StoryService.getStoriesByUser(this.params.user_id, this.query.fields);
+    static async getStoriesByUser(ctx) {
+        logger.info('Obtaining stories for user with ID', ctx.request.params.user_id);
+        ctx.body = await StoryService.getStoriesByUser(ctx.request.params.user_id, ctx.request.query.fields);
     }
 
-    static* getStoryById() {
-        logger.info('Obtaining stories by id %s', this.params.id);
-        this.assert(this.params.id, 400, 'Id param required');
-        const story = yield StoryService.getStoryById(this.params.id, this.query.fields);
+    static async getStoryById(ctx) {
+        logger.info('Obtaining stories by id %s', ctx.request.params.id);
+        ctx.assert(ctx.request.params.id, 400, 'Id param required');
+        const story = await StoryService.getStoryById(ctx.request.params.id, ctx.request.query.fields);
         if (!story) {
-            this.throw(404, 'Story not found');
+            ctx.throw(404, 'Story not found');
             return;
         }
-        this.body = story;
+        ctx.body = story;
     }
 
-    static* deleteStory() {
-        logger.info('Deleting story by id %s', this.params.id);
+    static async deleteStory(ctx) {
+        logger.info('Deleting story by id %s', ctx.request.params.id);
         try {
-            const story = yield StoryService.deleteStoryById(
-                this.params.id, JSON.parse(this.request.query.loggedUser).id
+            const story = await StoryService.deleteStoryById(
+                ctx.request.params.id, JSON.parse(ctx.request.query.loggedUser).id
             );
 
             if (!story) {
                 logger.error('Story not found');
-                this.throw(404, 'Story not found');
+                ctx.throw(404, 'Story not found');
                 return;
             }
 
-            this.body = story;
+            ctx.body = story;
         } catch (err) {
             logger.error(err);
             throw err;
         }
     }
 
-    static* updateStory() {
-        logger.info('Updating story by id %s', this.params.id);
+    static async updateStory(ctx) {
+        logger.info('Updating story by id %s', ctx.request.params.id);
         try {
-            const story = yield StoryService.updateStory(
-                this.params.id, this.request.body
+            const story = await StoryService.updateStory(
+                ctx.request.params.id, ctx.request.body
             );
 
             if (!story) {
                 logger.error('Story not found');
-                this.throw(404, 'Story not found');
+                ctx.throw(404, 'Story not found');
                 return;
             }
 
-            this.body = story;
+            ctx.body = story;
         } catch (err) {
             logger.error(err);
             throw err;

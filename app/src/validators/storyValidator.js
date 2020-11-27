@@ -3,32 +3,32 @@ const ErrorSerializer = require('serializers/errorSerializer');
 
 class StoryValidator {
 
-    static* create(next) {
+    static async create(ctx, next) {
         logger.debug('Validate register story');
-        this.checkBody('title').notEmpty();
-        this.checkBody('the_geom').notEmpty();
-        this.checkBody('email').notEmpty();
+        ctx.checkBody('title').notEmpty();
+        ctx.checkBody('the_geom').notEmpty();
+        ctx.checkBody('email').notEmpty();
 
-        if (this.errors) {
-            logger.debug('errors ', this.errors);
-            this.body = ErrorSerializer.serializeValidationBodyErrors(this.errors);
-            this.status = 400;
+        if (ctx.errors) {
+            logger.debug('errors ', ctx.errors);
+            ctx.body = ErrorSerializer.serializeValidationBodyErrors(ctx.errors);
+            ctx.status = 400;
             return;
         }
-        yield next;
+        await next();
 
     }
 
-    static* getStoryById(next) {
+    static async getStoryById(ctx, next) {
         logger.debug('Validate get story by id');
-        this.checkParams('id').notEmpty();
-        if (this.errors) {
-            logger.debug('errors ', this.errors);
-            this.body = ErrorSerializer.serializeValidationBodyErrors(this.errors);
-            this.status = 400;
+        ctx.checkParams('id').notEmpty();
+        if (ctx.errors) {
+            logger.debug('errors ', ctx.errors);
+            ctx.body = ErrorSerializer.serializeValidationBodyErrors(ctx.errors);
+            ctx.status = 400;
             return;
         }
-        yield next;
+        await next();
     }
 
 }

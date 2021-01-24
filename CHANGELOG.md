@@ -1,3 +1,7 @@
+# 24/01/2021
+
+- Replace CT integration library
+
 ## 27/11/2020
 
 - Update Koa to v2.x and related dependencies updates

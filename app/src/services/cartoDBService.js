@@ -3,7 +3,7 @@ const config = require('config');
 const CartoDB = require('cartodb');
 const Mustache = require('mustache');
 const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
-const ctRegisterMicroservice = require('ct-register-microservice-node');
+const { RWAPIMicroservice } = require('rw-api-microservice-node');
 
 Mustache.escapeHtml = (text) => text;
 
@@ -108,7 +108,7 @@ class CartoDBService {
 
     // eslint-disable-next-line class-methods-use-this
     async getGeojson(path) {
-        const result = await ctRegisterMicroservice.requestToMicroservice({
+        const result = await RWAPIMicroservice.requestToMicroservice({
             uri: path,
             method: 'GET',
             json: true

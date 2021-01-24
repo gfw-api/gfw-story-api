@@ -26,108 +26,110 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: type
-                operator: In
-                values:
-                - apps
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - apps
       containers:
-      - args:
-        - start
-        env:
-        - name: PORT
-          value: "3500"
-        - name: NODE_ENV
-          value: prod
-        - name: NODE_PATH
-          value: app/src
-        - name: LOCAL_URL
-          value: http://story.gfw.svc.cluster.local:3500
-        - name: QUEUE_NAME
-          value: mail_prod
-        - name: WRI_MAIL_RECIPIENTS
-          value: teresa.schofield@wri.org,alice.gottesman@wri.org,abarrett@wri.org
-        - name: MONGO_URI
-          valueFrom:
-            secretKeyRef:
-              key: STORY_MONGO_URI
-              name: dbsecrets
-        - name: QUEUE_URL
-          valueFrom:
-            secretKeyRef:
-              key: REDIS_URI
-              name: dbsecrets
-        - name: NEWRELIC_LICENSE
-          valueFrom:
-            secretKeyRef:
-              key: NEWRELIC_LICENSE
-              name: mssecrets
-        - name: CT_URL
-          valueFrom:
-            secretKeyRef:
-              key: CT_URL
-              name: mssecrets
-        - name: CT_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: CT_TOKEN
-              name: mssecrets
-        - name: CT_REGISTER_MODE
-          valueFrom:
-            secretKeyRef:
-              key: CT_REGISTER_MODE
-              name: mssecrets
-        - name: API_VERSION
-          valueFrom:
-            secretKeyRef:
-              key: API_VERSION
-              name: mssecrets
-        - name: CARTODB_USER
-          valueFrom:
-            secretKeyRef:
-              key: CARTODB_USER
-              name: mssecrets
-        - name: CARTODB_APIKEY
-          valueFrom:
-            secretKeyRef:
-              key: CARTODB_APIKEY
-              name: mssecrets
-        image: vizzuality/story
-        imagePullPolicy: Always
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthcheck
-            port: 3500
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
-        name: story
-        ports:
-        - containerPort: 3500
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthcheck
-            port: 3500
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
-        resources:
-          limits:
-            cpu: "1"
-            memory: 512M
-          requests:
-            cpu: 250m
-            memory: 256M
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
+        - args:
+            - start
+          env:
+            - name: PORT
+              value: "3500"
+            - name: NODE_ENV
+              value: prod
+            - name: NODE_PATH
+              value: app/src
+            - name: LOCAL_URL
+              value: http://story.gfw.svc.cluster.local:3500
+            - name: QUEUE_NAME
+              value: mail_prod
+            - name: WRI_MAIL_RECIPIENTS
+              value: teresa.schofield@wri.org,alice.gottesman@wri.org,abarrett@wri.org
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  key: STORY_MONGO_URI
+                  name: dbsecrets
+            - name: QUEUE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_URI
+                  name: dbsecrets
+            - name: NEWRELIC_LICENSE
+              valueFrom:
+                secretKeyRef:
+                  key: NEWRELIC_LICENSE
+                  name: mssecrets
+            - name: CT_URL
+              valueFrom:
+                secretKeyRef:
+                  key: CT_URL
+                  name: mssecrets
+            - name: CT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: CT_TOKEN
+                  name: mssecrets
+            - name: CT_REGISTER_MODE
+              valueFrom:
+                secretKeyRef:
+                  key: CT_REGISTER_MODE
+                  name: mssecrets
+            - name: API_VERSION
+              valueFrom:
+                secretKeyRef:
+                  key: API_VERSION
+                  name: mssecrets
+            - name: CARTODB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: CARTODB_USER
+                  name: mssecrets
+            - name: CARTODB_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  key: CARTODB_APIKEY
+                  name: mssecrets
+          image: gfwdockerhub/story
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthcheck
+              port: 3500
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: story
+          ports:
+            - containerPort: 3500
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthcheck
+              port: 3500
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512M
+            requests:
+              cpu: 250m
+              memory: 256M
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: regcred
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}

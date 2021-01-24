@@ -18,6 +18,7 @@ services:
       CT_TOKEN: <token>
       WRI_MAIL_RECIPIENTS: <emails>
       CT_REGISTER_MODE: auto
+      FASTLY_ENABLED: "false"
     command: develop
     links:
       - mongo

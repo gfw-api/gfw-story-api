@@ -5,7 +5,7 @@ const Story = require('models/story.model');
 const StorySerializer = require('serializers/storySerializer');
 const mailService = require('services/mailService');
 const config = require('config');
-const ctRegisterMicroservice = require('ct-register-microservice-node');
+const { RWAPIMicroservice } = require('rw-api-microservice-node');
 
 const deserializer = async (obj) => new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(obj);
 
@@ -81,7 +81,7 @@ class StoryService {
             if (data.loggedUser) {
                 logger.info('Obtaining user', `/user/${data.loggedUser.id}`);
                 try {
-                    const result = await ctRegisterMicroservice.requestToMicroservice({
+                    const result = await RWAPIMicroservice.requestToMicroservice({
                         uri: `/user/${data.loggedUser.id}`,
                         method: 'GET',
                         json: true
@@ -122,7 +122,7 @@ class StoryService {
     static async getUser(id) {
         try {
             logger.debug('Doing request to /user');
-            const result = await ctRegisterMicroservice.requestToMicroservice({
+            const result = await RWAPIMicroservice.requestToMicroservice({
                 uri: `/user/${id}`,
                 method: 'GET',
                 json: true

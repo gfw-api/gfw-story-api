@@ -5,7 +5,6 @@
     "urls": [{
         "url": "/v1/story",
         "method": "POST",
-        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "#(service.uri)",
@@ -23,7 +22,6 @@
     }, {
         "url": "/v1/story/:id",
         "method": "PUT",
-        "authenticated": true,
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "#(service.uri)",
@@ -32,7 +30,6 @@
     }, {
         "url": "/v1/story/:id",
         "method": "DELETE",
-        "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "#(service.uri)",

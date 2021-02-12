@@ -83,12 +83,25 @@ class StoryRouter {
 
 }
 
+const isAuthenticatedMiddleware = async (ctx, next) => {
+    logger.info(`Verifying if user is authenticated`);
+    const { query, body } = ctx.request;
+
+    const user = { ...(query.loggedUser ? JSON.parse(query.loggedUser) : {}), ...body.loggedUser };
+
+    if (!user || !user.id) {
+        ctx.throw(401, 'Unauthorized');
+        return;
+    }
+    await next();
+};
+
 router.get('/', StoryRouter.getStories);
 router.get('/user/:user_id', StoryRouter.getStoriesByUser);
 router.get('/:id', StoryValidator.getStoryById, StoryRouter.getStoryById);
-router.delete('/:id', StoryValidator.getStoryById, StoryRouter.deleteStory);
-router.put('/:id', StoryValidator.getStoryById, StoryRouter.updateStory);
-router.post('/', StoryRouter.createStory);
+router.delete('/:id', isAuthenticatedMiddleware, StoryValidator.getStoryById, StoryRouter.deleteStory);
+router.put('/:id', isAuthenticatedMiddleware, StoryValidator.getStoryById, StoryRouter.updateStory);
+router.post('/', isAuthenticatedMiddleware, StoryRouter.createStory);
 
 
 module.exports = router;

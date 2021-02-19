@@ -3,10 +3,10 @@ services:
   develop:
     build: .
     ports:
-      - "3500:3500"
+      - "3501:3501"
     container_name: gfw-story-api
     environment:
-      PORT: 3500
+      PORT: 3501
       NODE_PATH: app/src
       NODE_ENV: dev
       CARTODB_APIKEY: <key>
@@ -14,8 +14,8 @@ services:
       QUEUE_URL: redis://mymachine:6379
       QUEUE_NAME: mail
       CT_URL: http://mymachine:9000
-      LOCAL_URL: http://mymachine:3500
-      CT_TOKEN: <token>
+      LOCAL_URL: http://mymachine:3501
+      CT_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
       WRI_MAIL_RECIPIENTS: <emails>
       CT_REGISTER_MODE: auto
       FASTLY_ENABLED: "false"

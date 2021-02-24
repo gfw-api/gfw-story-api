@@ -37,7 +37,7 @@
     "bunyan": "1.7.1",
     "cartodb": "^0.5.1",
     "config": "1.19.0",
-    "rw-api-microservice-node": "^3.3.0",
+    "rw-api-microservice-node": "^3.3.3",
     "jsonapi-serializer": "2.1.1",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",

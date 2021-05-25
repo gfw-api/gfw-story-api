@@ -38,7 +38,7 @@
     "cartodb": "^0.5.1",
     "config": "1.19.0",
     "rw-api-microservice-node": "^3.3.3",
-    "jsonapi-serializer": "2.1.1",
+    "jsonapi-serializer": "^3.6.7",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
     "koa-logger": "^3.2.1",

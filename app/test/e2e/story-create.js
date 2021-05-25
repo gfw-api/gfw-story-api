@@ -3,6 +3,8 @@ const chai = require('chai');
 const config = require('config');
 const Story = require('models/story.model');
 const { getTestServer } = require('./utils/test-server');
+const { USERS } = require('./utils/test.constants');
+const { mockGetUserFromToken } = require('./utils/helpers');
 
 chai.should();
 
@@ -22,10 +24,11 @@ describe('Create story', () => {
     });
 
     it('Create story (happy case)', async () => {
+        mockGetUserFromToken(USERS.ADMIN);
 
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
             .post('/api/v2/sql', {
-                q: '\n    INSERT INTO gfw_stories_staging (\n      name, details, title, visible, location, email, date, user_id,\n      media, the_geom, hide_user\n    ) VALUES (\n      null, null, null, false,\n      null, null, null, null,\n      null, ST_SetSRID(ST_GeomFromGeoJSON(\'undefined\'), 4326), false\n    ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,\n      email, created_at, name, title, visible, date, location, cartodb_id\n      as id, media, user_id, hide_user',
+                q: '\n    INSERT INTO gfw_stories_staging (\n      name, details, title, visible, location, email, date, user_id,\n      media, the_geom, hide_user\n    ) VALUES (\n      null, null, null, false,\n      null, null, null, \'1a10d7c6e0a37126611fd7a7\',\n      null, ST_SetSRID(ST_GeomFromGeoJSON(\'undefined\'), 4326), false\n    ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,\n      email, created_at, name, title, visible, date, location, cartodb_id\n      as id, media, user_id, hide_user',
                 api_key: config.get('cartoDB.apiKey'),
                 format: 'json'
             })
@@ -43,7 +46,7 @@ describe('Create story', () => {
                     location: 'location',
                     id: 234,
                     media: '[{"previewUrl":"14721253102146a8c7ea386c528d2e90193f3f69d8e29nature_4.jpg","order":0},{"previewUrl":"147212530713536f9f59b55ca98097ed3a3e2c220220cnature_3.jpg","order":2},{"previewUrl":"14721253134877fd92494f7a0630ba37651dbc8c4bcf1nature_1.jpg","order":3},{"embedUrl":"youtube.com/watch?v=RtcrS7dmhcI","order":1}]',
-                    user_id: '5dbadb0adf2dc74d2ad05dfb',
+                    user_id: '1a10d7c6e0a37126611fd7a7',
                     hide_user: true
                 }],
                 time: 0.048,
@@ -66,8 +69,19 @@ describe('Create story', () => {
                 total_rows: 1
             });
 
+        nock(process.env.CT_URL)
+            .get(`/v1/user/${USERS.ADMIN.id}`)
+            .reply(200, {
+                data: {
+                    type: 'user',
+                    id: USERS.ADMIN.id,
+                    attributes: USERS.ADMIN
+                }
+            });
+
         const response = await requester
-            .post('/api/v1/story');
+            .post('/api/v1/story')
+            .set('Authorization', `Bearer abcd`);
 
         response.status.should.equal(200);
         response.body.data.should.be.an('object').and.deep.equal({

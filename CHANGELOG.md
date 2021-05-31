@@ -1,3 +1,7 @@
+## 31/05/2021
+
+- Update `rw-api-microservice-node` to add CORS support.
+
 ## 12/02/2021
 
 - Remove dependency on CT's `authenticated` functionality

@@ -62,25 +62,10 @@ spec:
                 secretKeyRef:
                   key: NEWRELIC_LICENSE
                   name: mssecrets
-            - name: CT_URL
+            - name: GATEWAY_URL
               valueFrom:
                 secretKeyRef:
-                  key: CT_URL
-                  name: mssecrets
-            - name: CT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key: CT_TOKEN
-                  name: mssecrets
-            - name: CT_REGISTER_MODE
-              valueFrom:
-                secretKeyRef:
-                  key: CT_REGISTER_MODE
-                  name: mssecrets
-            - name: API_VERSION
-              valueFrom:
-                secretKeyRef:
-                  key: API_VERSION
+                  key: GATEWAY_URL
                   name: mssecrets
             - name: CARTODB_USER
               valueFrom:

@@ -82,7 +82,7 @@ class StoryService {
                 logger.info('Obtaining user', `/user/${data.loggedUser.id}`);
                 try {
                     const result = await RWAPIMicroservice.requestToMicroservice({
-                        uri: `/user/${data.loggedUser.id}`,
+                        uri: `/v1/user/${data.loggedUser.id}`,
                         method: 'GET',
                         json: true
                     });
@@ -123,7 +123,7 @@ class StoryService {
         try {
             logger.debug('Doing request to /user');
             const result = await RWAPIMicroservice.requestToMicroservice({
-                uri: `/user/${id}`,
+                uri: `/v1/user/${id}`,
                 method: 'GET',
                 json: true
             });

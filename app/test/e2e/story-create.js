@@ -10,6 +10,9 @@ chai.should();
 
 let requester;
 
+nock.disableNetConnect();
+nock.enableNetConnect(process.env.HOST_IP);
+
 describe('Create story', () => {
     before(async () => {
         if (process.env.NODE_ENV !== 'test') {
@@ -69,7 +72,7 @@ describe('Create story', () => {
                 total_rows: 1
             });
 
-        nock(process.env.CT_URL)
+        nock(process.env.GATEWAY_URL)
             .get(`/v1/user/${USERS.ADMIN.id}`)
             .reply(200, {
                 data: {

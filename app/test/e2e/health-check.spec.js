@@ -6,6 +6,9 @@ chai.should();
 
 let requester;
 
+nock.disableNetConnect();
+nock.enableNetConnect(process.env.HOST_IP);
+
 describe('GET healthcheck', () => {
     before(async () => {
         if (process.env.NODE_ENV !== 'test') {

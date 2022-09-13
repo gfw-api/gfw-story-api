@@ -221,6 +221,13 @@
   dependencies:
     any-observable "^0.3.0"
 
+"@tiagojsag/fastly-promises@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@tiagojsag/fastly-promises/-/fastly-promises-1.0.1.tgz#faeac50c371baf83eb214599b7ec6dcc3eece26a"
+  integrity sha512-p667o2wAyXEPEAHEGo6xq7Ml4lKm1IZvESEfOJhRJkcgSLLMPt+tLBP0O8eZ1mdHhhGdV4rg8XOMuGuJllK4zw==
+  dependencies:
+    axios "0.26.1"
+
 "@types/chai@4":
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.11.tgz#d3614d6c5f500142358e6ed24e1bf16657536c50"
@@ -568,12 +575,12 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.9.1.tgz#7e33d8f7d449b3f673cd72deb9abdc552dbe528e"
   integrity sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
 
-axios@0.21.1, axios@^0.21.1:
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
-  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
+axios@0.26.1, axios@^0.26.1:
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"
+  integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==
   dependencies:
-    follow-redirects "^1.10.0"
+    follow-redirects "^1.14.8"
 
 axobject-query@^2.0.2:
   version "2.1.2"
@@ -1904,13 +1911,6 @@ fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
-fastly-promises@tiagojsag/fastly-promises#master:
-  version "0.0.0-semantically-released"
-  uid "14470364f0d4e62b8ff99c8f7e7dd7cb27039242"
-  resolved "https://codeload.github.com/tiagojsag/fastly-promises/tar.gz/14470364f0d4e62b8ff99c8f7e7dd7cb27039242"
-  dependencies:
-    axios "0.21.1"
-
 faye-websocket@~0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.10.0.tgz#4e492f8d04dfb6f89003507f6edbf2d501e7c6f4"
@@ -2080,10 +2080,10 @@ flatted@^2.0.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
   integrity sha512-a1hQMktqW9Nmqr5aktAux3JMNqaucxGcjtjWnZLHX7yyPCmlSV3M54nGYbqT8K+0GhF3NBgmJCc3ma+WOgX8Jg==
 
-follow-redirects@^1.10.0:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.1.tgz#5f69b813376cee4fd0474a3aba835df04ab763b7"
-  integrity sha512-SSG5xmZh1mkPGyKzjZP8zLjltIfpW32Y5QpdNJyjcfGxK3qo3NDDkZOZSFiGn1A6SclQxY9GzEwAHQ3dmYRWpg==
+follow-redirects@^1.14.8:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
 
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
@@ -4990,14 +4990,14 @@ run-async@^2.4.0:
   dependencies:
     is-promise "^2.1.0"
 
-rw-api-microservice-node@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/rw-api-microservice-node/-/rw-api-microservice-node-3.4.1.tgz#01b2876d2b2acc13aaf01d630784e10b7410e186"
-  integrity sha512-blxLH1IXYudV+fMzuXFDPqkQyfqgWg2XDhjpDwRBdxW6PRW8ztOh7IKhVHov/RWeonrVQI6OzLnYEWsv3CBw0Q==
+rw-api-microservice-node@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/rw-api-microservice-node/-/rw-api-microservice-node-4.0.7.tgz#0a4d9f09e84815fc949c9ad201298def7fe6076e"
+  integrity sha512-bMhW8xuz1hSX9KouNNurNRoKnKlcDpYVzazZy5X2jcCfDeyACXCzJZL4EHebcAR4mdv4eX0+R9591UJ+9YmM1A==
   dependencies:
     "@koa/cors" "^3.1.0"
-    axios "^0.21.1"
-    fastly-promises tiagojsag/fastly-promises#master
+    "@tiagojsag/fastly-promises" "^1.0.1"
+    axios "^0.26.1"
     koa-compose "^4.1.0"
 
 rxjs@^6.3.3, rxjs@^6.5.3:

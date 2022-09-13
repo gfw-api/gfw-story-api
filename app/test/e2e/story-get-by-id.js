@@ -8,6 +8,9 @@ chai.should();
 
 let requester;
 
+nock.disableNetConnect();
+nock.enableNetConnect(process.env.HOST_IP);
+
 describe('Get story by id', () => {
     before(async () => {
         if (process.env.NODE_ENV !== 'test') {

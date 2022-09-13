@@ -125,16 +125,16 @@ class CartoDBService {
         let geojson = null;
         if (filters.iso) {
             if (!filters.id1) {
-                geojson = await this.getGeojson(`/geostore/admin/${filters.iso}`);
+                geojson = await this.getGeojson(`/v1/geostore/admin/${filters.iso}`);
             } else {
-                geojson = await this.getGeojson(`/geostore/admin/${filters.iso}/${filters.id1}`);
+                geojson = await this.getGeojson(`/v1/geostore/admin/${filters.iso}/${filters.id1}`);
             }
         } else if (filters.wdpaid) {
-            geojson = await this.getGeojson(`/geostore/wdpa/${filters.wdpaid}`);
+            geojson = await this.getGeojson(`/v1/geostore/wdpa/${filters.wdpaid}`);
         } else if (filters.use) {
-            geojson = await this.getGeojson(`/geostore/use/${filters.use}/${filters.useid}`);
+            geojson = await this.getGeojson(`/v1/geostore/use/${filters.use}/${filters.useid}`);
         } else if (filters.geostore) {
-            geojson = await this.getGeojson(`/geostore/${filters.geostore}`);
+            geojson = await this.getGeojson(`/v1/geostore/${filters.geostore}`);
         }
         if (geojson) {
             geojson = JSON.stringify(geojson);

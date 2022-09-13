@@ -1,11 +1,11 @@
-FROM node:12-alpine
+FROM node:16.15-alpine3.15
 MAINTAINER info@vizzuality.com
 
 ENV NAME gfw-story-api
 ENV USER microservice
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache --update bash git openssh python build-base
+    apk add --no-cache --update bash python3 alpine-sdk
 
 RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
 

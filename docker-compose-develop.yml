@@ -13,11 +13,10 @@ services:
       CARTODB_USER: <user>
       QUEUE_URL: redis://mymachine:6379
       QUEUE_NAME: mail
-      CT_URL: http://mymachine:9000
+      GATEWAY_URL: http://mymachine:9000
       LOCAL_URL: http://mymachine:3500
-      CT_TOKEN: <token>
+      MICROSERVICE_TOKEN: <token>
       WRI_MAIL_RECIPIENTS: <emails>
-      CT_REGISTER_MODE: auto
       FASTLY_ENABLED: "false"
     command: develop
     links:

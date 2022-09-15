@@ -46,7 +46,7 @@ spec:
             - name: QUEUE_NAME
               value: mail_staging
             - name: WRI_MAIL_RECIPIENTS
-              value: edward.morris@vizzuality.com,tiago.garcia@vizzuality.com
+              value: tiago.garcia@vizzuality.com
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:

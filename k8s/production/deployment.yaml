@@ -57,15 +57,15 @@ spec:
                 secretKeyRef:
                   key: REDIS_URI
                   name: dbsecrets
-            - name: NEWRELIC_LICENSE
-              valueFrom:
-                secretKeyRef:
-                  key: NEWRELIC_LICENSE
-                  name: mssecrets
             - name: GATEWAY_URL
               valueFrom:
                 secretKeyRef:
                   key: GATEWAY_URL
+                  name: mssecrets
+            - name: MICROSERVICE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: MICROSERVICE_TOKEN
                   name: mssecrets
             - name: CARTODB_USER
               valueFrom:

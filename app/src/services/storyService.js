@@ -210,6 +210,25 @@ class StoryService {
         return StorySerializer.serialize(story);
     }
 
+    static async deleteByUserId(userId) {
+        logger.debug(`[VocabularyService]: Delete widgets for user with id:  ${userId}`);
+        const userStories = await Story.find({ userId: { $eq: userId } }).exec();
+
+        if (userStories) {
+            for (let i = 0; i < userStories.length; i++) {
+                const currentStory = userStories[i];
+                const currentStoryId = currentStory.id;
+                logger.debug('[StoryService]: Deleting story from CartoDB service');
+                await cartoDBService.deleteStoryById(currentStoryId);
+                logger.info(`[DBACCESS-DELETE]: story.id: ${currentStoryId}`);
+                // eslint-disable-next-line no-await-in-loop
+                await currentStory.remove();
+            }
+        }
+
+        return StorySerializer.serialize(userStories);
+    }
+
 }
 
 module.exports = StoryService;

@@ -61,6 +61,18 @@ class StoryRouter {
         }
     }
 
+    static async deleteByUserId(ctx) {
+        const userIdToDelete = ctx.params.userId;
+
+        logger.info(`[StoryRouter] Deleting all stories for user with id: ${userIdToDelete}`);
+        try {
+            ctx.body = await StoryService.deleteByUserId(userIdToDelete);
+        } catch (err) {
+            logger.error(`Error deleting stories from user ${userIdToDelete}`, err);
+            ctx.throw(500, `Error deleting stories from user ${userIdToDelete}`);
+        }
+    }
+
     static async updateStory(ctx) {
         logger.info('Updating story by id %s', ctx.request.params.id);
         try {
@@ -96,12 +108,32 @@ const isAuthenticatedMiddleware = async (ctx, next) => {
     await next();
 };
 
+const deleteResourceAuthorizationMiddleware = async (ctx, next) => {
+    logger.info(`[StoryRouter] Checking delete by user authorization`);
+    const { query, body } = ctx.request;
+
+    const user = { ...(query.loggedUser ? JSON.parse(query.loggedUser) : {}), ...body.loggedUser };
+    const userFromParam = ctx.params.userId;
+
+    if (user.id === 'microservice' || user.role === 'ADMIN') {
+        await next();
+        return;
+    }
+
+    if (userFromParam !== user.id) {
+        ctx.throw(403, 'Forbidden');
+        return;
+    }
+
+    await next();
+};
+
 router.get('/', StoryRouter.getStories);
 router.get('/user/:user_id', StoryRouter.getStoriesByUser);
 router.get('/:id', StoryValidator.getStoryById, StoryRouter.getStoryById);
 router.delete('/:id', isAuthenticatedMiddleware, StoryValidator.getStoryById, StoryRouter.deleteStory);
+router.delete('/by-user-id/:userId', isAuthenticatedMiddleware, deleteResourceAuthorizationMiddleware, StoryRouter.deleteByUserId);
 router.put('/:id', isAuthenticatedMiddleware, StoryValidator.getStoryById, StoryRouter.updateStory);
 router.post('/', isAuthenticatedMiddleware, StoryRouter.createStory);
-
 
 module.exports = router;

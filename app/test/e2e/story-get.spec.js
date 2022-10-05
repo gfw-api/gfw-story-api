@@ -129,7 +129,6 @@ describe('Get stories', () => {
                 total_rows: 5
             });
 
-
         const response = await requester
             .get('/api/v1/story');
 

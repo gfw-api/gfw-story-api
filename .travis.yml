@@ -1,4 +1,10 @@
 dist: focal
+addons:
+  apt:
+    sources:
+      - sourceline: 'deb https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse'
+    packages:
+      - mongodb
 language: node_js
 services:
   - mongodb

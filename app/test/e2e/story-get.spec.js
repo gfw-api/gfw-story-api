@@ -28,7 +28,13 @@ describe('Get stories', () => {
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
             .get('/api/v2/sql')
             .query({
-                q: 'SELECT%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ST_Y%28the_geom%29%20AS%20lat%2C%20ST_X%28the_geom%29%20AS%20lng%2C%20details%2C%20email%2C%20created_at%2C%20name%2C%20title%2C%20visible%2C%20date%2C%20location%2C%20cartodb_id%20as%20id%2C%20media%2C%20user_id%2C%20hide_user%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20FROM%20gfw_stories_staging%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20WHERE%20visible%3Dtrue%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ORDER%20BY%20date%20ASC',
+                q: `SELECT
+                ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details, email, created_at, name, title, visible, date, location, cartodb_id as id, media, user_id, hide_user
+                FROM ${config.get('cartoDB.table')}
+                WHERE visible=true
+                
+                
+                ORDER BY date ASC`,
                 api_key: config.get('cartoDB.apiKey'),
                 format: 'json'
             })
@@ -82,7 +88,7 @@ describe('Get stories', () => {
                     lat: 40.4348915,
                     lng: -3.7001603000000127,
                     details: null,
-                    email: 'barrenechea.miguel@gmail.com',
+                    email: 'test@email.com',
                     created_at: '2016-08-26T09:42:46Z',
                     name: 'Save the Pachecos',
                     title: 'Save the Pachecos (testing)',
@@ -97,7 +103,7 @@ describe('Get stories', () => {
                     lat: 40.43462077742479,
                     lng: -3.701722432910719,
                     details: null,
-                    email: 'barrenechea.miguel@gmail.com',
+                    email: 'test@email.com',
                     created_at: '2016-08-26T11:51:15Z',
                     name: 'Raúl Requero',
                     title: 'Save the Arenzanas',
@@ -215,7 +221,7 @@ describe('Get stories', () => {
                     visible: true,
                     details: null,
                     date: '2016-08-26T00:00:00Z',
-                    email: 'barrenechea.miguel@gmail.com',
+                    email: 'test@email.com',
                     location: null,
                     media: [],
                     lat: 40.4348915,
@@ -232,7 +238,7 @@ describe('Get stories', () => {
                     visible: true,
                     details: null,
                     date: '2016-08-26T00:00:00Z',
-                    email: 'barrenechea.miguel@gmail.com',
+                    email: 'test@email.com',
                     location: null,
                     media: [],
                     lat: 40.43462077742479,

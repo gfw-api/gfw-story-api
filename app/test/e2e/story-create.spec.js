@@ -31,7 +31,17 @@ describe('Create story', () => {
 
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
             .post('/api/v2/sql', {
-                q: '\n    INSERT INTO gfw_stories_staging (\n      name, details, title, visible, location, email, date, user_id,\n      media, the_geom, hide_user\n    ) VALUES (\n      null, null, null, false,\n      null, null, null, \'1a10d7c6e0a37126611fd7a7\',\n      null, ST_SetSRID(ST_GeomFromGeoJSON(\'undefined\'), 4326), false\n    ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,\n      email, created_at, name, title, visible, date, location, cartodb_id\n      as id, media, user_id, hide_user',
+                q: `
+    INSERT INTO ${config.get('cartoDB.table')} (
+      name, details, title, visible, location, email, date, user_id,
+      media, the_geom, hide_user
+    ) VALUES (
+      null, null, null, false,
+      null, null, null, '${USERS.ADMIN.id}',
+      null, ST_SetSRID(ST_GeomFromGeoJSON('undefined'), 4326), false
+    ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,
+      email, created_at, name, title, visible, date, location, cartodb_id
+      as id, media, user_id, hide_user`,
                 api_key: config.get('cartoDB.apiKey'),
                 format: 'json'
             })

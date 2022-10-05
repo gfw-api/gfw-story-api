@@ -25,7 +25,6 @@ module.exports = (grunt) => {
                     reporter: 'spec',
                     quiet: false, // Optionally suppress output to standard out (defaults to false)
                     clearRequireCache: true, // Optionally clear the require cache before running tests (defaults to false)
-                    require: 'co-mocha'
                 },
                 src: ['app/test/unit/**/*.test.js']
             },
@@ -34,7 +33,7 @@ module.exports = (grunt) => {
                     reporter: 'spec',
                     quiet: false, // Optionally suppress output to standard out (defaults to false)
                     clearRequireCache: true, // Optionally clear the require cache before running tests (defaults to false)
-
+                    timeout: 100000,
                 },
                 src: ['app/test/e2e/**/*.spec.js']
             }
@@ -47,7 +46,7 @@ module.exports = (grunt) => {
                 files: [
                     'app/src/**/*.js',
                 ],
-                tasks: ['jshint:js', 'mochaTest:unit', 'express:dev'],
+                tasks: ['mochaTest:unit', 'express:dev'],
                 options: {
                     spawn: false
                 }
@@ -56,7 +55,7 @@ module.exports = (grunt) => {
                 files: [
                     'app/test/unit/**/*.test.js',
                 ],
-                tasks: ['jshint:jsTest', 'mochaTest:unit'],
+                tasks: ['mochaTest:unit'],
                 options: {
                     spawn: false
                 }
@@ -65,7 +64,7 @@ module.exports = (grunt) => {
                 files: [
                     'app/test/unit/**/*.spec.js',
                 ],
-                tasks: ['jshint:jsTest', 'mochaTest:e2e'],
+                tasks: ['mochaTest:e2e'],
                 options: {
                     spawn: false
                 }

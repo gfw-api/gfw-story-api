@@ -21,7 +21,7 @@
   },
   "mongodb":{
     "database": "gfw_story_db",
-    "host": "mymachine",
+    "host": "localhost",
     "port": 27017
   },
   "mailStory": {

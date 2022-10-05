@@ -12,7 +12,31 @@ const ErrorSerializer = require('serializers/errorSerializer');
 const koaSimpleHealthCheck = require('koa-simple-healthcheck');
 const { RWAPIMicroservice } = require('rw-api-microservice-node');
 
+let mongooseOptions = require('../../config/mongoose');
+
 const mongoUri = process.env.MONGO_URI || `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}/${config.get('mongodb.database')}`;
+
+if (mongoUri.indexOf('replicaSet') > -1) {
+    mongooseOptions = {
+        ...mongooseOptions,
+        db: { native_parser: true },
+        replset: {
+            auto_reconnect: false,
+            poolSize: 10,
+            socketOptions: {
+                keepAlive: 1000,
+                connectTimeoutMS: 30000
+            }
+        },
+        server: {
+            poolSize: 5,
+            socketOptions: {
+                keepAlive: 1000,
+                connectTimeoutMS: 30000
+            }
+        }
+    };
+}
 
 let retries = 10;
 
@@ -37,10 +61,9 @@ async function init() {
             // instance of koa
             const app = new Koa();
 
-            // if environment is dev then load koa-logger
-            if (process.env.NODE_ENV === 'dev') {
-                app.use(koaLogger());
-            }
+            app.use(koaSimpleHealthCheck());
+
+            app.use(koaLogger());
 
             koaQs(app, 'extended');
             app.use(koaBody({
@@ -49,8 +72,6 @@ async function init() {
                 formLimit: '50mb',
                 textLimit: '50mb'
             }));
-
-            app.use(koaSimpleHealthCheck());
 
             // catch errors and send in jsonapi standard. Always return vnd.api+json
             app.use(async (ctx, next) => {
@@ -103,30 +124,7 @@ async function init() {
             logger.info(`Connecting to MongoDB URL ${mongoUri}`);
         }
 
-        let dbOptions = {};
-        if (mongoUri.indexOf('replicaSet') > -1) {
-            dbOptions = {
-                db: { native_parser: true },
-                replset: {
-                    auto_reconnect: false,
-                    poolSize: 10,
-                    socketOptions: {
-                        keepAlive: 1000,
-                        connectTimeoutMS: 30000
-                    }
-                },
-                server: {
-                    poolSize: 5,
-                    socketOptions: {
-                        keepAlive: 1000,
-                        connectTimeoutMS: 30000
-                    }
-                }
-            };
-        }
-        mongoose.connect(mongoUri, dbOptions, onDbReady);
-
-
+        mongoose.connect(mongoUri, mongooseOptions, onDbReady);
     });
 }
 

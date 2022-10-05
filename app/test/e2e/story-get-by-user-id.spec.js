@@ -28,8 +28,10 @@ describe('Get story by user id', () => {
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
             .get('/api/v2/sql')
             .query({
-                q: 'SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng,\n                details, email, created_at, name, title, visible, date, location, cartodb_id as id,\n                media, user_id, hide_user FROM gfw_stories_staging    WHERE user_id = \'57ab390ad1d5fb2f00b20e11\'  ORDER BY date ASC',
-                api_key: 'aaa',
+                q: `SELECT ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng,
+                details, email, created_at, name, title, visible, date, location, cartodb_id as id,
+                media, user_id, hide_user FROM ${config.get('cartoDB.table')}    WHERE user_id = '57ab390ad1d5fb2f00b20e11'  ORDER BY date ASC`,
+                api_key: config.get('cartoDB.apiKey'),
                 format: 'json'
             })
             .reply(200, {

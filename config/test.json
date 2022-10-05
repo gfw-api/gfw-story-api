@@ -9,5 +9,13 @@
     "uri": "API_GATEWAY_URI",
     "queueUrl": "QUEUE_URL",
     "queueName": "QUEUE_NAME"
+  },
+  "cartoDB": {
+    "apiKey": "testCartoApiKey",
+    "user": "testCartoUser",
+    "table": "gfw_stories_tests"
+  },
+  "mongodb": {
+    "database": "gfw_story_db_test"
   }
 }

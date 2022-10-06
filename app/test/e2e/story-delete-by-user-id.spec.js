@@ -1,10 +1,10 @@
 const nock = require('nock');
 const chai = require('chai');
-// const config = require('config');
+const config = require('config');
 const Story = require('models/story.model');
 const { USERS } = require('./utils/test.constants');
 const { getTestServer } = require('./utils/test-server');
-const { mockGetUserFromToken } = require('./utils/helpers');
+const { mockGetUserFromToken, createStory } = require('./utils/helpers');
 
 chai.should();
 
@@ -45,67 +45,275 @@ describe('Delete stories by user id', () => {
 
     it('Delete story by userId as ADMIN should return all stories deleted and a 200 status', async () => {
         mockGetUserFromToken(USERS.ADMIN);
+        const fakeStoryOne = await (new Story(createStory({ userId: USERS.USER.id }))).save();
+        const fakeStoryTwo = await (new Story(createStory({ userId: USERS.USER.id }))).save();
+        const fakeStoryFromAdmin = await (new Story(createStory({ userId: USERS.ADMIN.id }))).save();
+        const fakeStoryFromManager = await (new Story(createStory({ userId: USERS.MANAGER.id }))).save();
 
-        //     nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
-        //         .post('/api/v2/sql', {
-        //             q: `
-        // INSERT INTO ${config.get('cartoDB.table')} (
-        //   name, details, title, visible, location, email, date, user_id,
-        //   media, the_geom, hide_user
-        // ) VALUES (
-        //   null, null, null, false,
-        //   null, null, null, '${USERS.USER.id}',
-        //   null, ST_SetSRID(ST_GeomFromGeoJSON('undefined'), 4326), false
-        // ) RETURNING ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng, details,
-        //   email, created_at, name, title, visible, date, location, cartodb_id
-        //   as id, media, user_id, hide_user`,
-        //             api_key: config.get('cartoDB.apiKey'),
-        //             format: 'json'
-        //         })
-        //         .reply(200, {
-        //             rows: [{
-        //                 lat: 20.12345,
-        //                 lng: -48.23456,
-        //                 details: 'story details',
-        //                 email: null,
-        //                 created_at: '2020-11-27T07:21:19Z',
-        //                 name: null,
-        //                 title: 'story title',
-        //                 visible: false,
-        //                 date: '2020-01-01T00:00:00Z',
-        //                 location: 'location',
-        //                 id: 234,
-        //                 media: '[{"previewUrl":"14721253102146a8c7ea386c528d2e90193f3f69d8e29nature_4.jpg","order":0},{"previewUrl":"147212530713536f9f59b55ca98097ed3a3e2c220220cnature_3.jpg","order":2},{"previewUrl":"14721253134877fd92494f7a0630ba37651dbc8c4bcf1nature_1.jpg","order":3},{"embedUrl":"youtube.com/watch?v=RtcrS7dmhcI","order":1}]',
-        //                 user_id: '1a10d7c6e0a37126611fd7a7',
-        //                 hide_user: true
-        //             }],
-        //             time: 0.048,
-        //             fields: {
-        //                 lat: { type: 'number', pgtype: 'float8' },
-        //                 lng: { type: 'number', pgtype: 'float8' },
-        //                 details: { type: 'string', pgtype: 'text' },
-        //                 email: { type: 'string', pgtype: 'text' },
-        //                 created_at: { type: 'date', pgtype: 'timestamptz' },
-        //                 name: { type: 'string', pgtype: 'text' },
-        //                 title: { type: 'string', pgtype: 'text' },
-        //                 visible: { type: 'boolean', pgtype: 'bool' },
-        //                 date: { type: 'date', pgtype: 'timestamptz' },
-        //                 location: { type: 'string', pgtype: 'text' },
-        //                 id: { type: 'number', pgtype: 'int4' },
-        //                 media: { type: 'string', pgtype: 'text' },
-        //                 user_id: { type: 'string', pgtype: 'text' },
-        //                 hide_user: { type: 'boolean', pgtype: 'bool' }
-        //             },
-        //             total_rows: 1
-        //         });
+        nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
+            .post('/api/v2/sql', {
+                q: `DELETE FROM ${config.get('cartoDB.table')} WHERE cartodb_id = ${fakeStoryOne.toObject()._id.toString()}`,
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
+            .reply(200, {
+                rows: [{
+                    ...fakeStoryOne.toObject(),
+                }],
+                time: 0.003,
+                fields: {
+                    lat: { type: 'number', pgtype: 'float8' },
+                    lng: { type: 'number', pgtype: 'float8' },
+                    details: { type: 'string', pgtype: 'text' },
+                    email: { type: 'string', pgtype: 'text' },
+                    created_at: { type: 'date', pgtype: 'timestamptz' },
+                    name: { type: 'string', pgtype: 'text' },
+                    title: { type: 'string', pgtype: 'text' },
+                    visible: { type: 'boolean', pgtype: 'bool' },
+                    date: { type: 'date', pgtype: 'timestamptz' },
+                    location: { type: 'string', pgtype: 'text' },
+                    id: { type: 'number', pgtype: 'int4' },
+                    media: { type: 'string', pgtype: 'text' },
+                    user_id: { type: 'string', pgtype: 'text' },
+                    hide_user: { type: 'boolean', pgtype: 'bool' }
+                },
+                total_rows: 1
+            });
+        nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
+            .post('/api/v2/sql', {
+                q: `DELETE FROM ${config.get('cartoDB.table')} WHERE cartodb_id = ${fakeStoryTwo.toObject()._id.toString()}`,
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
+            .reply(200, {
+                rows: [{
+                    ...fakeStoryTwo.toObject(),
+                }],
+                time: 0.003,
+                fields: {
+                    lat: { type: 'number', pgtype: 'float8' },
+                    lng: { type: 'number', pgtype: 'float8' },
+                    details: { type: 'string', pgtype: 'text' },
+                    email: { type: 'string', pgtype: 'text' },
+                    created_at: { type: 'date', pgtype: 'timestamptz' },
+                    name: { type: 'string', pgtype: 'text' },
+                    title: { type: 'string', pgtype: 'text' },
+                    visible: { type: 'boolean', pgtype: 'bool' },
+                    date: { type: 'date', pgtype: 'timestamptz' },
+                    location: { type: 'string', pgtype: 'text' },
+                    id: { type: 'number', pgtype: 'int4' },
+                    media: { type: 'string', pgtype: 'text' },
+                    user_id: { type: 'string', pgtype: 'text' },
+                    hide_user: { type: 'boolean', pgtype: 'bool' }
+                },
+                total_rows: 1
+            });
 
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', `Bearer abcd`);
+        response.status.should.equal(200);
+        response.body.data.should.have.lengthOf(2);
+        response.body.data[0].attributes.lat.should.equal(fakeStoryOne.toObject().lat);
+        response.body.data[0].attributes.lng.should.equal(fakeStoryOne.toObject().lng);
+        response.body.data[1].attributes.lat.should.equal(fakeStoryTwo.toObject().lat);
+        response.body.data[1].attributes.lng.should.equal(fakeStoryTwo.toObject().lng);
+
+        const findStoriesByUser = await Story.find({ userId: { $eq: USERS.USER.id } }).exec();
+        findStoriesByUser.should.be.an('array').with.lengthOf(0);
+
+        const findAllStories = await Story.find({}).lean().exec();
+        findAllStories.should.be.an('array').with.lengthOf(2);
+
+        const storyResourceTypes = findAllStories.map((story) => story._id.toString());
+        storyResourceTypes.should.contain(fakeStoryFromManager._id.toString());
+        storyResourceTypes.should.contain(fakeStoryFromAdmin._id.toString());
+    });
+
+    it('Delete story by userId as microservice should return all stories deleted and a 200 status', async () => {
+        mockGetUserFromToken(USERS.MICROSERVICE);
+        const fakeStoryOne = await (new Story(createStory({ userId: USERS.USER.id }))).save();
+        const fakeStoryTwo = await (new Story(createStory({ userId: USERS.USER.id }))).save();
+        const fakeStoryFromAdmin = await (new Story(createStory({ userId: USERS.ADMIN.id }))).save();
+        const fakeStoryFromManager = await (new Story(createStory({ userId: USERS.MANAGER.id }))).save();
+
+        nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
+            .post('/api/v2/sql', {
+                q: `DELETE FROM ${config.get('cartoDB.table')} WHERE cartodb_id = ${fakeStoryOne.toObject()._id.toString()}`,
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
+            .reply(200, {
+                rows: [{
+                    ...fakeStoryOne.toObject(),
+                }],
+                time: 0.003,
+                fields: {
+                    lat: { type: 'number', pgtype: 'float8' },
+                    lng: { type: 'number', pgtype: 'float8' },
+                    details: { type: 'string', pgtype: 'text' },
+                    email: { type: 'string', pgtype: 'text' },
+                    created_at: { type: 'date', pgtype: 'timestamptz' },
+                    name: { type: 'string', pgtype: 'text' },
+                    title: { type: 'string', pgtype: 'text' },
+                    visible: { type: 'boolean', pgtype: 'bool' },
+                    date: { type: 'date', pgtype: 'timestamptz' },
+                    location: { type: 'string', pgtype: 'text' },
+                    id: { type: 'number', pgtype: 'int4' },
+                    media: { type: 'string', pgtype: 'text' },
+                    user_id: { type: 'string', pgtype: 'text' },
+                    hide_user: { type: 'boolean', pgtype: 'bool' }
+                },
+                total_rows: 1
+            });
+        nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
+            .post('/api/v2/sql', {
+                q: `DELETE FROM ${config.get('cartoDB.table')} WHERE cartodb_id = ${fakeStoryTwo.toObject()._id.toString()}`,
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
+            .reply(200, {
+                rows: [{
+                    ...fakeStoryTwo.toObject(),
+                }],
+                time: 0.003,
+                fields: {
+                    lat: { type: 'number', pgtype: 'float8' },
+                    lng: { type: 'number', pgtype: 'float8' },
+                    details: { type: 'string', pgtype: 'text' },
+                    email: { type: 'string', pgtype: 'text' },
+                    created_at: { type: 'date', pgtype: 'timestamptz' },
+                    name: { type: 'string', pgtype: 'text' },
+                    title: { type: 'string', pgtype: 'text' },
+                    visible: { type: 'boolean', pgtype: 'bool' },
+                    date: { type: 'date', pgtype: 'timestamptz' },
+                    location: { type: 'string', pgtype: 'text' },
+                    id: { type: 'number', pgtype: 'int4' },
+                    media: { type: 'string', pgtype: 'text' },
+                    user_id: { type: 'string', pgtype: 'text' },
+                    hide_user: { type: 'boolean', pgtype: 'bool' }
+                },
+                total_rows: 1
+            });
+
+        const response = await requester
+            .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
+            .set('Authorization', `Bearer abcd`);
+        response.status.should.equal(200);
+        response.body.data.should.have.lengthOf(2);
+        response.body.data[0].attributes.lat.should.equal(fakeStoryOne.toObject().lat);
+        response.body.data[0].attributes.lng.should.equal(fakeStoryOne.toObject().lng);
+        response.body.data[1].attributes.lat.should.equal(fakeStoryTwo.toObject().lat);
+        response.body.data[1].attributes.lng.should.equal(fakeStoryTwo.toObject().lng);
+
+        const findStoriesByUser = await Story.find({ userId: { $eq: USERS.USER.id } }).exec();
+        findStoriesByUser.should.be.an('array').with.lengthOf(0);
+
+        const findAllStories = await Story.find({}).lean().exec();
+        findAllStories.should.be.an('array').with.lengthOf(2);
+
+        const storyResourceTypes = findAllStories.map((story) => story._id.toString());
+        storyResourceTypes.should.contain(fakeStoryFromManager._id.toString());
+        storyResourceTypes.should.contain(fakeStoryFromAdmin._id.toString());
+    });
+
+    it('Delete story by userId as the same user should return all stories deleted and a 200 status', async () => {
+        mockGetUserFromToken(USERS.USER);
+        const fakeStoryOne = await (new Story(createStory({ userId: USERS.USER.id }))).save();
+        const fakeStoryTwo = await (new Story(createStory({ userId: USERS.USER.id }))).save();
+        const fakeStoryFromAdmin = await (new Story(createStory({ userId: USERS.ADMIN.id }))).save();
+        const fakeStoryFromManager = await (new Story(createStory({ userId: USERS.MANAGER.id }))).save();
+
+        nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
+            .post('/api/v2/sql', {
+                q: `DELETE FROM ${config.get('cartoDB.table')} WHERE cartodb_id = ${fakeStoryOne.toObject()._id.toString()}`,
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
+            .reply(200, {
+                rows: [{
+                    ...fakeStoryOne.toObject(),
+                }],
+                time: 0.003,
+                fields: {
+                    lat: { type: 'number', pgtype: 'float8' },
+                    lng: { type: 'number', pgtype: 'float8' },
+                    details: { type: 'string', pgtype: 'text' },
+                    email: { type: 'string', pgtype: 'text' },
+                    created_at: { type: 'date', pgtype: 'timestamptz' },
+                    name: { type: 'string', pgtype: 'text' },
+                    title: { type: 'string', pgtype: 'text' },
+                    visible: { type: 'boolean', pgtype: 'bool' },
+                    date: { type: 'date', pgtype: 'timestamptz' },
+                    location: { type: 'string', pgtype: 'text' },
+                    id: { type: 'number', pgtype: 'int4' },
+                    media: { type: 'string', pgtype: 'text' },
+                    user_id: { type: 'string', pgtype: 'text' },
+                    hide_user: { type: 'boolean', pgtype: 'bool' }
+                },
+                total_rows: 1
+            });
+        nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
+            .post('/api/v2/sql', {
+                q: `DELETE FROM ${config.get('cartoDB.table')} WHERE cartodb_id = ${fakeStoryTwo.toObject()._id.toString()}`,
+                api_key: config.get('cartoDB.apiKey'),
+                format: 'json'
+            })
+            .reply(200, {
+                rows: [{
+                    ...fakeStoryTwo.toObject(),
+                }],
+                time: 0.003,
+                fields: {
+                    lat: { type: 'number', pgtype: 'float8' },
+                    lng: { type: 'number', pgtype: 'float8' },
+                    details: { type: 'string', pgtype: 'text' },
+                    email: { type: 'string', pgtype: 'text' },
+                    created_at: { type: 'date', pgtype: 'timestamptz' },
+                    name: { type: 'string', pgtype: 'text' },
+                    title: { type: 'string', pgtype: 'text' },
+                    visible: { type: 'boolean', pgtype: 'bool' },
+                    date: { type: 'date', pgtype: 'timestamptz' },
+                    location: { type: 'string', pgtype: 'text' },
+                    id: { type: 'number', pgtype: 'int4' },
+                    media: { type: 'string', pgtype: 'text' },
+                    user_id: { type: 'string', pgtype: 'text' },
+                    hide_user: { type: 'boolean', pgtype: 'bool' }
+                },
+                total_rows: 1
+            });
+
+        const response = await requester
+            .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
+            .set('Authorization', `Bearer abcd`);
+        response.status.should.equal(200);
+        response.body.data.should.have.lengthOf(2);
+        response.body.data[0].attributes.lat.should.equal(fakeStoryOne.toObject().lat);
+        response.body.data[0].attributes.lng.should.equal(fakeStoryOne.toObject().lng);
+        response.body.data[1].attributes.lat.should.equal(fakeStoryTwo.toObject().lat);
+        response.body.data[1].attributes.lng.should.equal(fakeStoryTwo.toObject().lng);
+
+        const findStoriesByUser = await Story.find({ userId: { $eq: USERS.USER.id } }).exec();
+        findStoriesByUser.should.be.an('array').with.lengthOf(0);
+
+        const findAllStories = await Story.find({}).lean().exec();
+        findAllStories.should.be.an('array').with.lengthOf(2);
+
+        const storyResourceTypes = findAllStories.map((story) => story._id.toString());
+        storyResourceTypes.should.contain(fakeStoryFromManager._id.toString());
+        storyResourceTypes.should.contain(fakeStoryFromAdmin._id.toString());
+    });
+
+    it('Deleting all stories of an user while being authenticated as USER should return a 200 and all stories deleted - no stories in the db', async () => {
+        mockGetUserFromToken(USERS.USER);
+
+        const response = await requester
+            .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
+            .set('Authorization', 'Bearer abcd')
+            .send();
 
         response.status.should.equal(200);
-        // TODO: create some actual stories and validate that they are deleted from db and returned here
-        response.body.data.should.have.lengthOf(0);
+        response.body.data.should.be.an('array').with.lengthOf(0);
     });
 
     afterEach(async () => {

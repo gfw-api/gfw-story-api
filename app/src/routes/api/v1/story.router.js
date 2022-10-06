@@ -120,19 +120,18 @@ const deleteResourceAuthorizationMiddleware = async (ctx, next) => {
         return;
     }
 
-    if (userFromParam !== user.id) {
-        ctx.throw(403, 'Forbidden');
+    if (userFromParam === user.id) {
+        await next();
         return;
     }
-
-    await next();
+    ctx.throw(403, 'Forbidden');
 };
 
 router.get('/', StoryRouter.getStories);
 router.get('/user/:user_id', StoryRouter.getStoriesByUser);
 router.get('/:id', StoryValidator.getStoryById, StoryRouter.getStoryById);
 router.delete('/:id', isAuthenticatedMiddleware, StoryValidator.getStoryById, StoryRouter.deleteStory);
-router.delete('/by-user-id/:userId', isAuthenticatedMiddleware, deleteResourceAuthorizationMiddleware, StoryRouter.deleteByUserId);
+router.delete('/by-user/:userId', isAuthenticatedMiddleware, deleteResourceAuthorizationMiddleware, StoryRouter.deleteByUserId);
 router.put('/:id', isAuthenticatedMiddleware, StoryValidator.getStoryById, StoryRouter.updateStory);
 router.post('/', isAuthenticatedMiddleware, StoryRouter.createStory);
 

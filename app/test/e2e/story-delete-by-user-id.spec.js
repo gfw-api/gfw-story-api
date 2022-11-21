@@ -109,6 +109,14 @@ describe('Delete stories by user id', () => {
                 total_rows: 1
             });
 
+        nock(process.env.GATEWAY_URL)
+            .get(`/auth/user/${USERS.USER.id}`)
+            .reply(200, {
+                data: {
+                    ...USERS.USER,
+                }
+            });
+
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', `Bearer abcd`);
@@ -193,6 +201,14 @@ describe('Delete stories by user id', () => {
                 total_rows: 1
             });
 
+        nock(process.env.GATEWAY_URL)
+            .get(`/auth/user/${USERS.USER.id}`)
+            .reply(200, {
+                data: {
+                    ...USERS.USER,
+                }
+            });
+
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', `Bearer abcd`);
@@ -209,6 +225,30 @@ describe('Delete stories by user id', () => {
         const storyResourceTypes = findAllStories.map((story) => story._id.toString());
         storyResourceTypes.should.contain(fakeStoryFromManager._id.toString());
         storyResourceTypes.should.contain(fakeStoryFromAdmin._id.toString());
+    });
+
+    it('Deleting a story owned by a user that does not exist as a MICROSERVICE should return a 404', async () => {
+        mockGetUserFromToken(USERS.MICROSERVICE);
+
+        nock(process.env.GATEWAY_URL)
+            .get(`/auth/user/potato`)
+            .reply(403, {
+                errors: [
+                    {
+                        status: 403,
+                        detail: 'Not authorized'
+                    }
+                ]
+            });
+
+        const deleteResponse = await requester
+            .delete(`/api/v1/story/by-user/potato`)
+            .set('Authorization', `Bearer abcd`)
+            .send();
+
+        deleteResponse.status.should.equal(404);
+        deleteResponse.body.should.have.property('errors').and.be.an('array');
+        deleteResponse.body.errors[0].should.have.property('detail').and.equal(`User potato does not exist`);
     });
 
     it('Delete story by userId as the same user should return all stories deleted and a 200 status', async () => {
@@ -277,6 +317,14 @@ describe('Delete stories by user id', () => {
                 total_rows: 1
             });
 
+        nock(process.env.GATEWAY_URL)
+            .get(`/auth/user/${USERS.USER.id}`)
+            .reply(200, {
+                data: {
+                    ...USERS.USER,
+                }
+            });
+
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', `Bearer abcd`);
@@ -334,6 +382,14 @@ describe('Delete stories by user id', () => {
                 });
         }));
 
+        nock(process.env.GATEWAY_URL)
+            .get(`/auth/user/${USERS.USER.id}`)
+            .reply(200, {
+                data: {
+                    ...USERS.USER,
+                }
+            });
+
         const deleteResponse = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', `Bearer abcd`)
@@ -348,6 +404,14 @@ describe('Delete stories by user id', () => {
 
     it('Deleting all stories of an user while being authenticated as USER should return a 200 and all stories deleted - no stories in the db', async () => {
         mockGetUserFromToken(USERS.USER);
+
+        nock(process.env.GATEWAY_URL)
+            .get(`/auth/user/${USERS.USER.id}`)
+            .reply(200, {
+                data: {
+                    ...USERS.USER,
+                }
+            });
 
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)

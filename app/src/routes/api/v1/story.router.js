@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const logger = require('logger');
 const StoryValidator = require('validators/storyValidator');
 const StoryService = require('services/storyService');
+const UserService = require('services/userService');
 
 const router = new Router({
     prefix: '/story'
@@ -63,6 +64,12 @@ class StoryRouter {
 
     static async deleteByUserId(ctx) {
         const userIdToDelete = ctx.params.userId;
+
+        try {
+            await UserService.getUserById(userIdToDelete);
+        } catch (error) {
+            ctx.throw(404, `User ${userIdToDelete} does not exist`);
+        }
 
         logger.info(`[StoryRouter] Deleting all stories for user with id: ${userIdToDelete}`);
         try {

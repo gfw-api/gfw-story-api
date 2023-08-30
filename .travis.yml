@@ -10,7 +10,7 @@ services:
   - mongodb
   - redis
 node_js:
-  - "16.15"
+  - "20.4"
 cache:
   directories:
   - "node_modules"
@@ -25,6 +25,9 @@ env:
     - QUEUE_URL=redis://127.0.0.1:6379
     - MICROSERVICE_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
     - FASTLY_ENABLED=false
+    - AWS_REGION=us-east-1
+    - AWS_ACCESS_KEY_ID=test
+    - AWS_SECRET_ACCESS_KEY=test
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter

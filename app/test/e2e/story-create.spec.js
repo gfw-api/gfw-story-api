@@ -4,7 +4,7 @@ const config = require('config');
 const Story = require('models/story.model');
 const { getTestServer } = require('./utils/test-server');
 const { USERS } = require('./utils/test.constants');
-const { mockGetUserFromToken } = require('./utils/helpers');
+const { mockValidateRequestWithApiKeyAndUserToken } = require('./utils/helpers');
 
 chai.should();
 
@@ -27,7 +27,7 @@ describe('Create story', () => {
     });
 
     it('Create story (happy case)', async () => {
-        mockGetUserFromToken(USERS.ADMIN);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.ADMIN });
 
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
             .post('/api/v2/sql', {
@@ -82,19 +82,22 @@ describe('Create story', () => {
                 total_rows: 1
             });
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/v1/user/${USERS.ADMIN.id}`)
             .reply(200, {
                 data: {
-                    type: 'user',
-                    id: USERS.ADMIN.id,
-                    attributes: USERS.ADMIN
+                    type: 'user', id: USERS.ADMIN.id, attributes: USERS.ADMIN
                 }
             });
 
         const response = await requester
             .post('/api/v1/story')
-            .set('Authorization', `Bearer abcd`);
+            .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(200);
         response.body.data.should.be.an('object').and.deep.equal({
@@ -107,24 +110,15 @@ describe('Create story', () => {
                 lat: 20.12345,
                 lng: -48.23456,
                 location: 'location',
-                media: [
-                    {
-                        order: 0,
-                        previewUrl: '14721253102146a8c7ea386c528d2e90193f3f69d8e29nature_4.jpg'
-                    },
-                    {
-                        order: 2,
-                        previewUrl: '147212530713536f9f59b55ca98097ed3a3e2c220220cnature_3.jpg'
-                    },
-                    {
-                        order: 3,
-                        previewUrl: '14721253134877fd92494f7a0630ba37651dbc8c4bcf1nature_1.jpg'
-                    },
-                    {
-                        embedUrl: 'youtube.com/watch?v=RtcrS7dmhcI',
-                        order: 1
-                    }
-                ],
+                media: [{
+                    order: 0, previewUrl: '14721253102146a8c7ea386c528d2e90193f3f69d8e29nature_4.jpg'
+                }, {
+                    order: 2, previewUrl: '147212530713536f9f59b55ca98097ed3a3e2c220220cnature_3.jpg'
+                }, {
+                    order: 3, previewUrl: '14721253134877fd92494f7a0630ba37651dbc8c4bcf1nature_1.jpg'
+                }, {
+                    embedUrl: 'youtube.com/watch?v=RtcrS7dmhcI', order: 1
+                }],
                 name: null,
                 title: 'story title',
                 visible: false,

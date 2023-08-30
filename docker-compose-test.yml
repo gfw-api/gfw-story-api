@@ -16,14 +16,16 @@ services:
       FASTLY_ENABLED: "false"
       LOCAL_URL: http://mymachine:3500
       MICROSERVICE_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
     command: test
     depends_on:
       - mongo
       - redis
 
   mongo:
-    image: mongo:3.4
-    command: --smallfiles
+    image: mongo:3.6
     ports:
       - "27017"
 

@@ -4,7 +4,7 @@ const config = require('config');
 const Story = require('models/story.model');
 const { USERS } = require('./utils/test.constants');
 const { getTestServer } = require('./utils/test-server');
-const { mockGetUserFromToken, createStory } = require('./utils/helpers');
+const { mockValidateRequestWithApiKeyAndUserToken, createStory, mockValidateRequestWithApiKey } = require('./utils/helpers');
 
 chai.should();
 
@@ -27,24 +27,27 @@ describe('Delete stories by user id', () => {
     });
 
     it('Deleting a story by user Id without being logged should return a 401 Unauthorized', async () => {
+        mockValidateRequestWithApiKey({});
         const response = await requester
-            .delete(`/api/v1/story/by-user/${USERS.USER.id}`);
+            .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(401);
     });
 
     it('Deleting a story by user Id without being logged should return a 403 Forbidden', async () => {
-        mockGetUserFromToken(USERS.MANAGER);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.MANAGER });
 
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
-            .set('Authorization', `Bearer abcd`);
+            .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(403);
     });
 
     it('Delete story by userId as ADMIN should return all stories deleted and a 200 status', async () => {
-        mockGetUserFromToken(USERS.ADMIN);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.ADMIN });
         const fakeStoryOne = await (new Story(createStory({ userId: USERS.USER.id }))).save();
         const fakeStoryTwo = await (new Story(createStory({ userId: USERS.USER.id }))).save();
         const fakeStoryFromAdmin = await (new Story(createStory({ userId: USERS.ADMIN.id }))).save();
@@ -109,7 +112,11 @@ describe('Delete stories by user id', () => {
                 total_rows: 1
             });
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/auth/user/${USERS.USER.id}`)
             .reply(200, {
                 data: {
@@ -119,7 +126,8 @@ describe('Delete stories by user id', () => {
 
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
-            .set('Authorization', `Bearer abcd`);
+            .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test');
         response.status.should.equal(200);
         response.body.data.should.have.lengthOf(2);
         response.body.data.map((elem) => elem.attributes.lat).sort().should.deep.equal([fakeStoryOne.toObject().lat, fakeStoryTwo.toObject().lat].sort());
@@ -136,7 +144,7 @@ describe('Delete stories by user id', () => {
     });
 
     it('Delete story by userId as microservice should return all stories deleted and a 200 status', async () => {
-        mockGetUserFromToken(USERS.MICROSERVICE);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.MICROSERVICE });
         const fakeStoryOne = await (new Story(createStory({ userId: USERS.USER.id }))).save();
         const fakeStoryTwo = await (new Story(createStory({ userId: USERS.USER.id }))).save();
         const fakeStoryFromAdmin = await (new Story(createStory({ userId: USERS.ADMIN.id }))).save();
@@ -201,7 +209,11 @@ describe('Delete stories by user id', () => {
                 total_rows: 1
             });
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/auth/user/${USERS.USER.id}`)
             .reply(200, {
                 data: {
@@ -211,7 +223,8 @@ describe('Delete stories by user id', () => {
 
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
-            .set('Authorization', `Bearer abcd`);
+            .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test');
         response.status.should.equal(200);
         response.body.data.should.have.lengthOf(2);
         response.body.data.map((elem) => elem.attributes.lat).sort().should.deep.equal([fakeStoryOne.toObject().lat, fakeStoryTwo.toObject().lat].sort());
@@ -228,9 +241,13 @@ describe('Delete stories by user id', () => {
     });
 
     it('Deleting a story owned by a user that does not exist as a MICROSERVICE should return a 404', async () => {
-        mockGetUserFromToken(USERS.MICROSERVICE);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.MICROSERVICE });
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/auth/user/potato`)
             .reply(403, {
                 errors: [
@@ -244,6 +261,7 @@ describe('Delete stories by user id', () => {
         const deleteResponse = await requester
             .delete(`/api/v1/story/by-user/potato`)
             .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test')
             .send();
 
         deleteResponse.status.should.equal(404);
@@ -252,7 +270,7 @@ describe('Delete stories by user id', () => {
     });
 
     it('Delete story by userId as the same user should return all stories deleted and a 200 status', async () => {
-        mockGetUserFromToken(USERS.USER);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.USER });
         const fakeStoryOne = await (new Story(createStory({ userId: USERS.USER.id }))).save();
         const fakeStoryTwo = await (new Story(createStory({ userId: USERS.USER.id }))).save();
         const fakeStoryFromAdmin = await (new Story(createStory({ userId: USERS.ADMIN.id }))).save();
@@ -317,7 +335,11 @@ describe('Delete stories by user id', () => {
                 total_rows: 1
             });
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/auth/user/${USERS.USER.id}`)
             .reply(200, {
                 data: {
@@ -327,7 +349,8 @@ describe('Delete stories by user id', () => {
 
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
-            .set('Authorization', `Bearer abcd`);
+            .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test');
         response.status.should.equal(200);
         response.body.data.should.have.lengthOf(2);
         response.body.data.map((elem) => elem.attributes.lat).sort().should.deep.equal([fakeStoryOne.toObject().lat, fakeStoryTwo.toObject().lat].sort());
@@ -344,7 +367,7 @@ describe('Delete stories by user id', () => {
     });
 
     it('Deleting stories from a user should delete them completely from a database (large number of stories)', async () => {
-        mockGetUserFromToken(USERS.USER);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.USER });
 
         await Promise.all([...Array(25)].map(async () => {
             const createdStory = await new Story(createStory({
@@ -382,7 +405,11 @@ describe('Delete stories by user id', () => {
                 });
         }));
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/auth/user/${USERS.USER.id}`)
             .reply(200, {
                 data: {
@@ -393,6 +420,7 @@ describe('Delete stories by user id', () => {
         const deleteResponse = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', `Bearer abcd`)
+            .set('x-api-key', 'api-key-test')
             .send();
 
         deleteResponse.status.should.equal(200);
@@ -403,9 +431,13 @@ describe('Delete stories by user id', () => {
     });
 
     it('Deleting all stories of an user while being authenticated as USER should return a 200 and all stories deleted - no stories in the db', async () => {
-        mockGetUserFromToken(USERS.USER);
+        mockValidateRequestWithApiKeyAndUserToken({ user: USERS.USER });
 
-        nock(process.env.GATEWAY_URL)
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/auth/user/${USERS.USER.id}`)
             .reply(200, {
                 data: {
@@ -416,6 +448,7 @@ describe('Delete stories by user id', () => {
         const response = await requester
             .delete(`/api/v1/story/by-user/${USERS.USER.id}`)
             .set('Authorization', 'Bearer abcd')
+            .set('x-api-key', 'api-key-test')
             .send();
 
         response.status.should.equal(200);

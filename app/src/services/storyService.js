@@ -59,7 +59,7 @@ class StoryService {
         return StorySerializer.serialize(storyFormat);
     }
 
-    static async createStory(data) {
+    static async createStory(data, apiKey) {
         // if user is logged. this param is add by api-gateway
         if (data.loggedUser) {
             data.userId = data.loggedUser.id;
@@ -84,7 +84,9 @@ class StoryService {
                     const result = await RWAPIMicroservice.requestToMicroservice({
                         uri: `/v1/user/${data.loggedUser.id}`,
                         method: 'GET',
-                        json: true
+                        headers: {
+                            'x-api-key': apiKey
+                        }
                     });
 
                     user = await deserializer(result);
@@ -117,22 +119,6 @@ class StoryService {
         }, wriRecipients);
 
         return StorySerializer.serialize(storyFormat);
-    }
-
-    static async getUser(id) {
-        try {
-            logger.debug('Doing request to /user');
-            const result = await RWAPIMicroservice.requestToMicroservice({
-                uri: `/v1/user/${id}`,
-                method: 'GET',
-                json: true
-            });
-
-            return await deserializer(result);
-        } catch (e) {
-            logger.error(e);
-            return null;
-        }
     }
 
     static async getStoryById(id, fields) {
@@ -176,9 +162,9 @@ class StoryService {
         }
     }
 
-    static async getStories(filters) {
+    static async getStories(filters, apiKey) {
         try {
-            let stories = await cartoDBService.getStories(filters);
+            let stories = await cartoDBService.getStories(filters, apiKey);
             stories = StoryService.formatStories(stories);
             await StoryService.cacheAllStories(stories);
             return StorySerializer.serialize(stories, filters.fields);

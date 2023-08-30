@@ -1,4 +1,4 @@
-FROM node:16.15-alpine3.15
+FROM node:20.4-alpine3.18
 MAINTAINER info@vizzuality.com
 
 ENV NAME gfw-story-api

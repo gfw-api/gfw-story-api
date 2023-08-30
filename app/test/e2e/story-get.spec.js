@@ -3,6 +3,7 @@ const chai = require('chai');
 const config = require('config');
 const Story = require('models/story.model');
 const { getTestServer } = require('./utils/test-server');
+const { mockValidateRequestWithApiKey } = require('./utils/helpers');
 
 chai.should();
 
@@ -25,6 +26,7 @@ describe('Get stories', () => {
     });
 
     it('Get stories (happy case)', async () => {
+        mockValidateRequestWithApiKey({});
         nock(`https://${config.get('cartoDB.user')}.cartodb.com`, { encodedQueryParams: true })
             .get('/api/v2/sql')
             .query({
@@ -136,7 +138,8 @@ describe('Get stories', () => {
             });
 
         const response = await requester
-            .get('/api/v1/story');
+            .get('/api/v1/story')
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(200);
         response.body.data.should.be.an('array').and.deep.equal([

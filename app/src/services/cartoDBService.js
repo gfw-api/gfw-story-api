@@ -107,11 +107,13 @@ class CartoDBService {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async getGeojson(path) {
+    async getGeojson(path, apiKey) {
         const result = await RWAPIMicroservice.requestToMicroservice({
             uri: path,
             method: 'GET',
-            json: true
+            headers: {
+                'x-api-key': apiKey
+            }
         });
         const geostore = await deserializer(result);
         if (geostore.geojson) {
@@ -121,20 +123,20 @@ class CartoDBService {
 
     }
 
-    async getStories(filters) {
+    async getStories(filters, apiKey) {
         let geojson = null;
         if (filters.iso) {
             if (!filters.id1) {
-                geojson = await this.getGeojson(`/v1/geostore/admin/${filters.iso}`);
+                geojson = await this.getGeojson(`/v1/geostore/admin/${filters.iso}`, apiKey);
             } else {
-                geojson = await this.getGeojson(`/v1/geostore/admin/${filters.iso}/${filters.id1}`);
+                geojson = await this.getGeojson(`/v1/geostore/admin/${filters.iso}/${filters.id1}`, apiKey);
             }
         } else if (filters.wdpaid) {
-            geojson = await this.getGeojson(`/v1/geostore/wdpa/${filters.wdpaid}`);
+            geojson = await this.getGeojson(`/v1/geostore/wdpa/${filters.wdpaid}`, apiKey);
         } else if (filters.use) {
-            geojson = await this.getGeojson(`/v1/geostore/use/${filters.use}/${filters.useid}`);
+            geojson = await this.getGeojson(`/v1/geostore/use/${filters.use}/${filters.useid}`, apiKey);
         } else if (filters.geostore) {
-            geojson = await this.getGeojson(`/v1/geostore/${filters.geostore}`);
+            geojson = await this.getGeojson(`/v1/geostore/${filters.geostore}`, apiKey);
         }
         if (geojson) {
             geojson = JSON.stringify(geojson);

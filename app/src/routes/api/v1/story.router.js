@@ -13,7 +13,7 @@ class StoryRouter {
     static async createStory(ctx) {
         logger.info('Creating story with body', ctx.request.body);
         try {
-            ctx.body = await StoryService.createStory(ctx.request.body);
+            ctx.body = await StoryService.createStory(ctx.request.body, ctx.request.headers['x-api-key']);
 
         } catch (err) {
             logger.error(err);
@@ -23,7 +23,7 @@ class StoryRouter {
 
     static async getStories(ctx) {
         logger.info('Obtaining stories');
-        ctx.body = await StoryService.getStories(ctx.request.query);
+        ctx.body = await StoryService.getStories(ctx.request.query, ctx.request.headers['x-api-key']);
     }
 
     static async getStoriesByUser(ctx) {
@@ -66,7 +66,7 @@ class StoryRouter {
         const userIdToDelete = ctx.params.userId;
 
         try {
-            await UserService.getUserById(userIdToDelete);
+            await UserService.getUserById(userIdToDelete, ctx.request.headers['x-api-key']);
         } catch (error) {
             ctx.throw(404, `User ${userIdToDelete} does not exist`);
         }
